@@ -65,6 +65,9 @@ private:
 
     // event params
     QPoint last_mouse_pos_;
+
+    // state
+    bool set_texture_ok_;
 };
 
 #endif // GLWIDGET_H

@@ -38,3 +38,6 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui
+
+INCLUDEPATH += F:/library/cv/opencv/build/include
+LIBS += -LF:/library/cv/opencv/build/x64/vc14/lib -lopencv_world320 -lopencv_world320d

@@ -7,7 +7,8 @@ GLWidget::GLWidget(QWidget *parent):QOpenGLWidget(parent),
     shader(0),
     VBO(QOpenGLBuffer::VertexBuffer),
     EBO(QOpenGLBuffer::IndexBuffer),
-    rot_angle_(0,0,0)
+    rot_angle_(0,0,0),
+    set_texture_ok_(false)
 {
     grid_mesh_ = GridMesh(QVector2D(-1.0, -1.0), QVector2D(1.0, 1.0), 512);
     vertex_shader_fn_ = QDir::currentPath() + "/default.vert";
@@ -39,7 +40,13 @@ void GLWidget::SetTexture(QString texture_fn)
     QImage img = QImage(texture_fn);
     img = img.convertToFormat(QImage::Format_RGBA8888, Qt::AutoColor);
     texture = new QOpenGLTexture(img);
-    img.save("F:/testsave.jpg");
+    //img.save("F:/testsave.jpg");
+
+    cv::Mat grey_image = cv::imread(texture_fn.toStdString(), cv::IMREAD_GRAYSCALE);
+    this->grid_mesh_.InitImage(grey_image);
+    cv::imshow("GLWidget::settexture",grey_image);
+
+    set_texture_ok_ = true;
     qDebug() << "set texture ok\n";
 }
 
@@ -116,7 +123,7 @@ void GLWidget::initializeGL()
         std::cerr << "unable to link shader.\n";
     }
 
-    SetTexture(QDir::currentPath() + "/grey3.jpg");
+    //SetTexture(QDir::currentPath() + "/grey3.jpg");
 
     shader->bind();
     this->model_mat_loc_ = shader->uniformLocation("model");
@@ -167,7 +174,8 @@ void GLWidget::paintGL()
     shader->setUniformValue(model_mat_loc_, model);
     shader->setUniformValue(view_mat_loc_, view);
     shader->setUniformValue(projection_mat_loc_, projection);
-    texture->bind();
+    if(set_texture_ok_)
+        texture->bind();
 
     glDrawElements(GL_TRIANGLES, this->grid_mesh_.GetIndexNum(), GL_UNSIGNED_INT, 0);
     shader->release();
