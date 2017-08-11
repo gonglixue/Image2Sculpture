@@ -18,6 +18,7 @@ public:
 
 public slots:
     void LoadImageAction();
+    void SaveMeshAction();
 
 private:
     Ui::MainWindow *ui;

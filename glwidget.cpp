@@ -40,14 +40,20 @@ void GLWidget::SetTexture(QString texture_fn)
     QImage img = QImage(texture_fn);
     img = img.convertToFormat(QImage::Format_RGBA8888, Qt::AutoColor);
     texture = new QOpenGLTexture(img);
-    //img.save("F:/testsave.jpg");
 
     cv::Mat grey_image = cv::imread(texture_fn.toStdString(), cv::IMREAD_GRAYSCALE);
     this->grid_mesh_.InitImage(grey_image);
     cv::imshow("GLWidget::settexture",grey_image);
 
+    this->SetupVertexAttribs();  // 载入纹理后需要更新VBO
+
     set_texture_ok_ = true;
     qDebug() << "set texture ok\n";
+}
+
+void GLWidget::SaveMesh(QString mesh_fn)
+{
+    grid_mesh_.SaveMeshToFile(mesh_fn);
 }
 
 void GLWidget::resizeGL(int w, int h)

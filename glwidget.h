@@ -29,6 +29,7 @@ public:
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
     void SetTexture(QString texture_fn);
+    void SaveMesh(QString mesh_fn);
 
 public slots:
     void cleanup();

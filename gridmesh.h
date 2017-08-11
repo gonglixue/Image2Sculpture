@@ -7,7 +7,9 @@
 #include <QVector2D>
 #include <QString>
 #include <QOpenGLFunctions>
+#include <fstream>
 #include <opencv2/opencv.hpp>
+
 
 using namespace std;
 
@@ -25,19 +27,21 @@ public:
     GridMesh::GridMesh(QVector2D left_bottom_corner, QVector2D righut_up_corner, int grid_density);
     const Vertex *Data() const {return vertices.data(); }
     const int *Index() const {return indices.data(); }
-    int GetVertexNum() const {return vertex_num_; }
+    int GetVertexNum() const {return vertices.size(); }
     int GetIndexNum() const {return indices.size(); }
 
     // initialize origin image(the texture)
-    void InitImage(cv::Mat& origin);
+    void InitImage(cv::Mat& origin, bool reverse=false);
     // adjust z factor
-    void AdjustZfactor(float z_factor_delta);
+    void AdjustZfactor(float new_z_factor);
     // adjust the denoise_image_
-    void ChangeDenoiseImage();
+    void ChangeDenoiseImage(float contra_value=1.5f);
     // adjust the blur image
-    void BlurImage();
+    void BlurImage(int kernel_size=3, float sigma=5.0f);
     // adjust the density
 
+    // save mesh to file
+    void SaveMeshToFile(QString file_name);
 
     cv::Mat origin_;
     cv::Mat denoise_image_;
@@ -45,6 +49,9 @@ public:
     cv::Mat final_blend_;
 private:
     void GenZFromFinal();
+    void GenMeshData();
+    float MapGrey2Z(float grey);
+
     QVector2D left_bottom_corner_;
     QVector2D right_up_corner_;
     QVector2D left_up_corner_;
@@ -62,8 +69,19 @@ private:
     int image_width_;
     int image_height_;
 
+    // image parameters
+    bool reverse_;
     int gaussian_kernel_size_;
+    float gaussian_sigma_;
+    int mid_kernel_size_;
     float z_factor_;
+    float bright_value_;    //对比度 0~3.0
+    float contra_value_;   //亮度
+    float blend_factor_a_;
+    float blend_factor_high_;
+
+
+
 
 };
 

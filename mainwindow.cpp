@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     connect(ui->actionOpen_Image, SIGNAL(triggered(bool)), this, SLOT(LoadImageAction()));
+    connect(ui->actionSave_Mesh, SIGNAL(triggered(bool)), this, SLOT(SaveMeshAction()));
 }
 
 MainWindow::~MainWindow()
@@ -27,4 +28,16 @@ void MainWindow::LoadImageAction()
     if(!image_fn.isEmpty()){
         ui->openGLWidget->SetTexture(image_fn);
     }
+}
+
+void MainWindow::SaveMeshAction()
+{
+    QString mesh_fn = QFileDialog::getSaveFileName(
+                this,
+                tr("Save Mesh"),
+                QString(),
+                tr("Mesh File(*.obj)")
+                );
+    if(!mesh_fn.isEmpty())
+        ui->openGLWidget->SaveMesh(mesh_fn);
 }

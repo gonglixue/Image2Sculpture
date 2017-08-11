@@ -39,6 +39,7 @@
      <string>文件</string>
     </property>
     <addaction name="actionOpen_Image"/>
+    <addaction name="actionSave_Mesh"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -54,6 +55,11 @@
   <action name="actionOpen_Image">
    <property name="text">
     <string>Open Image</string>
+   </property>
+  </action>
+  <action name="actionSave_Mesh">
+   <property name="text">
+    <string>Save Mesh</string>
    </property>
   </action>
  </widget>
