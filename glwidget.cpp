@@ -8,7 +8,8 @@ GLWidget::GLWidget(QWidget *parent):QOpenGLWidget(parent),
     VBO(QOpenGLBuffer::VertexBuffer),
     EBO(QOpenGLBuffer::IndexBuffer),
     rot_angle_(0,0,0),
-    set_texture_ok_(false)
+    set_texture_ok_(false),
+    texture_yx_ratio_(1)
 {
     grid_mesh_ = GridMesh(QVector2D(-1.0, -1.0), QVector2D(1.0, 1.0), 512);
     vertex_shader_fn_ = QDir::currentPath() + "/default.vert";
@@ -47,6 +48,7 @@ void GLWidget::SetTexture(QString texture_fn)
 
     this->SetupVertexAttribs();  // 载入纹理后需要更新VBO
 
+    texture_yx_ratio_ = 1.0 * grey_image.rows / grey_image.cols;
     set_texture_ok_ = true;
     qDebug() << "set texture ok\n";
 }
@@ -170,6 +172,7 @@ void GLWidget::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     this->VAO.bind();
     model.setToIdentity();
+    model.scale(1, texture_yx_ratio_, 1);
     model.rotate(rot_angle_.x(), 1, 0, 0);
     model.rotate(rot_angle_.y(), 0, 1, 0);
     model.rotate(rot_angle_.z(), 0, 0, 1);
@@ -187,3 +190,10 @@ void GLWidget::paintGL()
     shader->release();
 }
 
+bool GLWidget::Empty()
+{
+    qDebug() << "mesh vertex num:" << grid_mesh_.GetVertexNum();
+    if(grid_mesh_.origin_.data == NULL)
+        return true;
+    return false;
+}

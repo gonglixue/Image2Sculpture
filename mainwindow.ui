@@ -6,31 +6,284 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>923</width>
-    <height>602</height>
+    <width>869</width>
+    <height>557</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="GLWidget" name="openGLWidget">
-    <property name="geometry">
-     <rect>
-      <x>400</x>
-      <y>10</y>
-      <width>512</width>
-      <height>512</height>
-     </rect>
-    </property>
-   </widget>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QWidget" name="widgetImageGroup" native="true">
+        <property name="tabletTracking">
+         <bool>false</bool>
+        </property>
+        <widget class="QWidget" name="">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>11</y>
+           <width>401</width>
+           <height>191</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelGroupName_Image">
+            <property name="text">
+             <string>图像处理</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="labelItem_Reverse">
+            <property name="text">
+             <string>反相</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QCheckBox" name="checkBox">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="labelItem_Contra">
+            <property name="text">
+             <string>对比度</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSlider" name="horizontalSlider_Contra">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QDoubleSpinBox" name="doubleSpinBox_Contra"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="labelItem_MKernel">
+            <property name="text">
+             <string>中值滤波核（降噪）</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QSlider" name="horizontalSlider_Median">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QSpinBox" name="spinBox_MKernel"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="labelItem_GKernel">
+            <property name="text">
+             <string>高斯核</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QSlider" name="horizontalSlider_GKernel">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2">
+           <widget class="QSpinBox" name="spinBox_GKernel"/>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="labelItem_GSigma">
+            <property name="text">
+             <string>高斯方差</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QSlider" name="horizontalSlider_GSigma">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="2">
+           <widget class="QDoubleSpinBox" name="doubleSpinBox_GSigma"/>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="labelItem_Blenda">
+            <property name="text">
+             <string>降噪图片的混合系数</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QSlider" name="horizontalSlider_Blenda">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="2">
+           <widget class="QDoubleSpinBox" name="doubleSpinBox_Blenda"/>
+          </item>
+         </layout>
+        </widget>
+        <zorder>labelGroupName_Image</zorder>
+        <zorder>labelItem_Contra</zorder>
+        <zorder>horizontalSlider_Contra</zorder>
+        <zorder>labelItem_MKernel</zorder>
+        <zorder>horizontalSlider_Median</zorder>
+        <zorder>labelItem_GKernel</zorder>
+        <zorder>labelItem_GSigma</zorder>
+        <zorder>labelItem_Blenda</zorder>
+        <zorder>horizontalSlider_GKernel</zorder>
+        <zorder>horizontalSlider_GSigma</zorder>
+        <zorder>horizontalSlider_Blenda</zorder>
+        <zorder>spinBox_MKernel</zorder>
+        <zorder>spinBox_GKernel</zorder>
+        <zorder>doubleSpinBox_GSigma</zorder>
+        <zorder>doubleSpinBox_Blenda</zorder>
+        <zorder>doubleSpinBox_Contra</zorder>
+        <zorder></zorder>
+        <zorder>labelItem_Reverse</zorder>
+        <zorder>checkBox</zorder>
+        <zorder>widgetMeshGroup</zorder>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widgetMeshGroup" native="true">
+        <widget class="QWidget" name="">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>401</width>
+           <height>141</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetNoConstraint</enum>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelGroupName_Mesh">
+            <property name="text">
+             <string>网格处理</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="labelItem_Z">
+            <property name="text">
+             <string>Z分量系数</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="3">
+           <widget class="QSlider" name="horizontalSlider">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Z分量映射</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QRadioButton" name="radioButton_Zmap1">
+            <property name="text">
+             <string>线性</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QRadioButton" name="radioButton_Zmap2">
+            <property name="text">
+             <string>二次</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3">
+           <widget class="QRadioButton" name="radioButton_Zmap3">
+            <property name="text">
+             <string>三次</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="labelItem_Density">
+            <property name="text">
+             <string>网格密度</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" colspan="3">
+           <widget class="QSlider" name="horizontalSlider_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="4">
+           <widget class="QLineEdit" name="lineEdit"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="labelItem_Render">
+            <property name="text">
+             <string>渲染方式</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QRadioButton" name="radioButton_RenderFlat">
+            <property name="text">
+             <string>Flat</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2" colspan="2">
+           <widget class="QRadioButton" name="radioButton_RenderSmooth">
+            <property name="text">
+             <string>Smooth</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="GLWidget" name="openGLWidget"/>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>923</width>
+     <width>869</width>
      <height>26</height>
     </rect>
    </property>

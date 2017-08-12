@@ -32,6 +32,16 @@ void MainWindow::LoadImageAction()
 
 void MainWindow::SaveMeshAction()
 {
+    if(ui->openGLWidget->Empty())
+    {
+        QMessageBox::warning(this,
+                             tr("Image2Scuplture"),
+                             tr("Cannot save empty mesh.\n"
+                                "Please load a new image to generate mesh."),
+                             QMessageBox::Ok);
+
+        return;
+    }
     QString mesh_fn = QFileDialog::getSaveFileName(
                 this,
                 tr("Save Mesh"),

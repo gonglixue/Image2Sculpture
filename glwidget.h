@@ -13,6 +13,7 @@
 #include <qevent.h>
 #include <QVector4D>
 #include <QImage>
+#include <QMessageBox>
 #include "gridmesh.h"
 #include "qcamera.h"
 
@@ -30,7 +31,7 @@ public:
     QSize sizeHint() const override;
     void SetTexture(QString texture_fn);
     void SaveMesh(QString mesh_fn);
-
+    bool Empty();
 public slots:
     void cleanup();
 
@@ -61,6 +62,7 @@ private:
     QMatrix4x4 model;
     QMatrix4x4 view;
     QMatrix4x4 projection;
+    float texture_yx_ratio_;
 
     QVector3D rot_angle_;
 
