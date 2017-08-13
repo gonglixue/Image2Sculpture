@@ -25,6 +25,7 @@ public slots:
     void OnChangeGKernSlider(int slider_value);
     void OnChangeSigmaSlider(int slider_value);
     void OnChangeBlendA(int slider_value);
+    void OnChangeZFactorSlider(int slider_value);
 
 private:
     Ui::MainWindow *ui;

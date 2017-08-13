@@ -9,12 +9,13 @@ GLWidget::GLWidget(QWidget *parent):QOpenGLWidget(parent),
     EBO(QOpenGLBuffer::IndexBuffer),
     rot_angle_(0,0,0),
     set_texture_ok_(false),
-    texture_yx_ratio_(1)
+    texture_yx_ratio_(1),
+    active_texture_(false)
 {
     grid_mesh_ = GridMesh(QVector2D(-1.0, -1.0), QVector2D(1.0, 1.0), 512);
     vertex_shader_fn_ = QDir::currentPath() + "/default.vert";
     frag_shader_fn_ = QDir::currentPath() + "/default.frag";
-
+    light_pos_ = QVector3D(1, 1, 1);
     texture = 0;
     camera = QCamera(QVector3D(0, 0, 3));
     model.setToIdentity();
@@ -131,13 +132,13 @@ void GLWidget::initializeGL()
         std::cerr << "unable to link shader.\n";
     }
 
-    //SetTexture(QDir::currentPath() + "/grey3.jpg");
-
     shader->bind();
     this->model_mat_loc_ = shader->uniformLocation("model");
     this->view_mat_loc_ = shader->uniformLocation("view");
     this->projection_mat_loc_ = shader->uniformLocation("projection");
-
+    this->active_texture_loc_ = shader->uniformLocation("active_texture");
+    this->light_pos_loc_ = shader->uniformLocation("lightPos");
+    this->camera_pos_loc_ = shader->uniformLocation("viewPos");
     shader->setUniformValue("grey_image", 0);
 
     SetupVertexAttribs();
@@ -183,6 +184,9 @@ void GLWidget::paintGL()
     shader->setUniformValue(model_mat_loc_, model);
     shader->setUniformValue(view_mat_loc_, view);
     shader->setUniformValue(projection_mat_loc_, projection);
+    shader->setUniformValue(active_texture_loc_, active_texture_);
+    shader->setUniformValue(light_pos_loc_, light_pos_);
+
     if(set_texture_ok_)
         texture->bind();
 
@@ -263,6 +267,13 @@ void GLWidget::ChangeBlendA(float a)
     if(Empty())
         return;
     this->grid_mesh_.ChangeBlend_a(a);
+    SetupVertexAttribs();
+    update();
+}
+
+void GLWidget::ChangeZFactor(float z_factor)
+{
+    this->grid_mesh_.AdjustZfactor(z_factor);
     SetupVertexAttribs();
     update();
 }

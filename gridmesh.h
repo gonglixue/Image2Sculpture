@@ -68,6 +68,7 @@ private:
     void GenMeshData();
     float MapGrey2Z(float grey, int mode=2);
     void ResetParams();
+    void EstimateVertexNormal();
 
     QVector2D left_bottom_corner_;
     QVector2D right_up_corner_;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1000</width>
-    <height>664</height>
+    <width>999</width>
+    <height>675</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -303,13 +303,35 @@
           </item>
           <item row="1" column="1" colspan="3">
            <widget class="QSlider" name="horizontalSlider_Zfactor">
+            <property name="minimum">
+             <number>0</number>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="singleStep">
+             <number>2</number>
+            </property>
+            <property name="value">
+             <number>60</number>
+            </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item row="1" column="4">
-           <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+           <widget class="QDoubleSpinBox" name="doubleSpinBox_Zfactor">
+            <property name="maximum">
+             <double>0.100000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.001000000000000</double>
+            </property>
+            <property name="value">
+             <double>0.060000000000000</double>
+            </property>
+           </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label">
@@ -366,7 +388,7 @@
           <item row="4" column="1">
            <widget class="QRadioButton" name="radioButton_RenderFlat">
             <property name="text">
-             <string>Flat</string>
+             <string>texture</string>
             </property>
            </widget>
           </item>
@@ -393,7 +415,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1000</width>
+     <width>999</width>
      <height>26</height>
     </rect>
    </property>

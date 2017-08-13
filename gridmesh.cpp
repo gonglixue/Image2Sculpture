@@ -174,6 +174,7 @@ void GridMesh::GenMeshData()
                         left_up_corner_.y() - row*grid_height_,
                         posZ * this->z_factor_
                         );
+
             QVector3D normal = QVector3D(0, 0, 1);
 
             Vertex v;
@@ -183,6 +184,7 @@ void GridMesh::GenMeshData()
             vertices.push_back(v);
         }
     }
+    EstimateVertexNormal();
 
     vertex_num_ = vertices.size();
 }
@@ -370,4 +372,129 @@ void GridMesh::ResetParams()
     contra_value_ = DEFAULT_CONTRA;
     blend_factor_a_ = DEFAULT_BLENDA;
     morph_mode_ = true;
+}
+
+void GridMesh::EstimateVertexNormal()
+{
+    // 邻接面法线相加，归一
+    for(int row=0; row<density_y_; row++)
+    {
+        for(int col=0; col<density_x_; col++)
+        {
+            int vertex_id = row * density_x_ + col;
+            Vertex v = vertices[vertex_id];
+
+            // 四角
+            if((row==0&&col==0) || (row==0&&col==density_x_-1)
+                    || (row==density_y_-1 && col==0) || (row==density_y_-1&&col==density_x_-1)){
+                vertices[vertex_id].normal = QVector3D(0, 0, 1);
+            }
+
+            // 上边界
+            else if(row == 0){
+                Vertex v0 = vertices[vertex_id - 1];
+                Vertex v1 = vertices[vertex_id + 1];
+                Vertex v2 = vertices[vertex_id+density_x_-1];
+                Vertex v3 = vertices[vertex_id+density_x_];
+                Vertex v4 = vertices[vertex_id+density_x_+1];
+
+                QVector3D v_v0 = v0.position - v.position;
+                QVector3D v_v2 = v2.position - v.position;
+                QVector3D v_v3 = v3.position - v.position;
+                QVector3D v_v1 = v1.position - v.position;
+
+                QVector3D normal1 = QVector3D::crossProduct(v_v0, v_v2);
+                QVector3D normal2 = QVector3D::crossProduct(v_v2, v_v3);
+                QVector3D normal3 = QVector3D::crossProduct(v_v3, v_v1);
+
+                vertices[vertex_id].normal = (normal1 + normal2 +normal3).normalized();
+
+            }
+            // 左边界
+            else if(col == 0){
+                Vertex v0 = vertices[vertex_id + density_x_];
+                Vertex v1 = vertices[vertex_id + 1];
+                Vertex v2 = vertices[vertex_id + 1 - density_x_];
+                Vertex v3 = vertices[vertex_id - density_x_];
+
+                QVector3D v_v0 = v0.position - v.position;
+                QVector3D v_v1 = v1.position - v.position;
+                QVector3D v_v2 = v2.position - v.position;
+                QVector3D v_v3 = v3.position - v.position;
+
+                QVector3D normal1 = QVector3D::crossProduct(v_v0, v_v1);
+                QVector3D normal2 = QVector3D::crossProduct(v_v1, v_v2);
+                QVector3D normal3 = QVector3D::crossProduct(v_v2, v_v3);
+
+                vertices[vertex_id].normal = (normal1 + normal2 + normal3).normalized();
+            }
+
+            // 右边界
+            else if(col == density_x_-1){
+                Vertex v0 = vertices[vertex_id - density_x_];
+                Vertex v1 = vertices[vertex_id + density_x_];
+                Vertex v2 = vertices[vertex_id + density_x_ - 1];
+                Vertex v3 = vertices[vertex_id - 1];
+
+                QVector3D v_v0 = v0.position - v.position;
+                QVector3D v_v1 = v1.position - v.position;
+                QVector3D v_v2 = v2.position - v.position;
+                QVector3D v_v3 = v3.position - v.position;
+
+                QVector3D normal1 = QVector3D::crossProduct(v_v0, v_v3);
+                QVector3D normal2 = QVector3D::crossProduct(v_v3, v_v2);
+                QVector3D normal3 = QVector3D::crossProduct(v_v2, v_v1);
+
+                vertices[vertex_id].normal = (normal1 + normal2 + normal3).normalized();
+
+            }
+
+            // 下边界
+            else if(row == density_y_ - 1)
+            {
+                Vertex v0 = vertices[vertex_id - 1];
+                Vertex v1 = vertices[vertex_id - density_x_];
+                Vertex v2 = vertices[vertex_id - density_x_ + 1];
+                Vertex v3 = vertices[vertex_id + 1];
+                QVector3D v_v0 = v0.position - v.position;
+                QVector3D v_v1 = v1.position - v.position;
+                QVector3D v_v2 = v2.position - v.position;
+                QVector3D v_v3 = v3.position - v.position;
+
+                QVector3D normal1 = QVector3D::crossProduct(v_v1, v_v0);
+                QVector3D normal2 = QVector3D::crossProduct(v_v2, v_v1);
+                QVector3D normal3 = QVector3D::crossProduct(v_v3, v_v2);
+                vertices[vertex_id].normal = (normal1 + normal2 + normal3).normalized();
+            }
+
+            // 非边界点
+            else{
+                Vertex v0 = vertices[vertex_id - density_x_];
+                Vertex v1 = vertices[vertex_id - 1];
+                Vertex v2 = vertices[vertex_id - 1 + density_x_];
+                Vertex v3 = vertices[vertex_id + density_x_];
+                Vertex v4 = vertices[vertex_id + 1];
+                Vertex v5 = vertices[vertex_id + 1 - density_x_];
+
+                QVector3D v_v0 = v0.position - v.position;
+                QVector3D v_v1 = v1.position - v.position;
+                QVector3D v_v2 = v2.position - v.position;
+                QVector3D v_v3 = v3.position - v.position;
+                QVector3D v_v4 = v4.position - v.position;
+                QVector3D v_v5 = v5.position - v.position;
+
+                QVector3D normal1 = QVector3D::crossProduct(v_v0, v_v1);
+                QVector3D normal2 = QVector3D::crossProduct(v_v1, v_v2);
+                QVector3D normal3 = QVector3D::crossProduct(v_v2, v_v3);
+                QVector3D normal4 = QVector3D::crossProduct(v_v3, v_v4);
+                QVector3D normal5 = QVector3D::crossProduct(v_v4, v_v5);
+                QVector3D normal6 = QVector3D::crossProduct(v_v5, v_v0);
+
+                vertices[vertex_id].normal = (normal1 + normal2 + normal3 + normal4 + normal5 + normal6).normalized();
+            }
+
+
+
+        }
+    }
 }

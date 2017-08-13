@@ -39,6 +39,7 @@ public:
     void ChangeGKernelSize(int size);
     void ChangeGSigma(float sigma);
     void ChangeBlendA(float a);
+    void ChangeZFactor(float z_factor);
 public slots:
     void cleanup();
     void Morph_EroDila();
@@ -58,10 +59,13 @@ private:
     QOpenGLVertexArrayObject VAO;
     QOpenGLBuffer VBO;
     QOpenGLBuffer EBO;
-    QOpenGLShaderProgram *shader;
+    QOpenGLShaderProgram *shader;  // texture
     GLuint model_mat_loc_;
     GLuint projection_mat_loc_;
     GLuint view_mat_loc_;
+    GLuint active_texture_loc_;
+    GLuint light_pos_loc_;
+    GLuint camera_pos_loc_;
     QOpenGLTexture *texture;
     QImage texture_QImage_;
 
@@ -74,12 +78,13 @@ private:
     QMatrix4x4 projection;
     float texture_yx_ratio_;
     QVector3D rot_angle_;
-
+    QVector3D light_pos_;
     // event params
     QPoint last_mouse_pos_;
 
     // state
     bool set_texture_ok_;
+    bool active_texture_;
 };
 
 #endif // GLWIDGET_H

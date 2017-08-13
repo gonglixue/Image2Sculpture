@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->pushButton_DilaEro, SIGNAL(clicked(bool)), ui->openGLWidget, SLOT(Morph_DilaEro()));
     connect(ui->pushButton_EroDila, SIGNAL(clicked(bool)), ui->openGLWidget, SLOT(Morph_EroDila()));
+
+    connect(ui->horizontalSlider_Zfactor, SIGNAL(valueChanged(int)), this, SLOT(OnChangeZFactorSlider(int)));
 }
 
 MainWindow::~MainWindow()
@@ -109,6 +111,16 @@ void MainWindow::OnChangeBlendA(int slider_value)
     float a = slider_value / 10.0f;
     ui->openGLWidget->ChangeBlendA(a);
     ui->doubleSpinBox_Blenda->setValue(a);
+}
+
+void MainWindow::OnChangeZFactorSlider(int slider_value)
+{
+    if(CheckEmpty())
+        return;
+    float factor = slider_value / 1000.0;
+    ui->openGLWidget->ChangeZFactor(factor);
+    ui->doubleSpinBox_Zfactor->setValue(factor);
+
 }
 
 bool MainWindow::CheckEmpty()
