@@ -24,10 +24,12 @@ public slots:
     void OnChangeMorphKernelSlider(int slider_value);
     void OnChangeGKernSlider(int slider_value);
     void OnChangeSigmaSlider(int slider_value);
+    void OnChangeBlendA(int slider_value);
 
 private:
     Ui::MainWindow *ui;
     bool CheckEmpty();
+    void ResetUI();
 };
 
 #endif // MAINWINDOW_H

@@ -102,7 +102,7 @@
           <item row="3" column="2" colspan="2">
            <widget class="QSlider" name="horizontalSlider_MorphKernel">
             <property name="maximum">
-             <number>7</number>
+             <number>10</number>
             </property>
             <property name="value">
              <number>1</number>
@@ -230,13 +230,29 @@
           </item>
           <item row="7" column="2" colspan="2">
            <widget class="QSlider" name="horizontalSlider_Blenda">
+            <property name="maximum">
+             <number>10</number>
+            </property>
+            <property name="value">
+             <number>6</number>
+            </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item row="7" column="4">
-           <widget class="QDoubleSpinBox" name="doubleSpinBox_Blenda"/>
+           <widget class="QDoubleSpinBox" name="doubleSpinBox_Blenda">
+            <property name="maximum">
+             <double>1.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.100000000000000</double>
+            </property>
+            <property name="value">
+             <double>0.600000000000000</double>
+            </property>
+           </widget>
           </item>
           <item row="8" column="1" colspan="2">
            <widget class="QPushButton" name="pushButton_EroDila">

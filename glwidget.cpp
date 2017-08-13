@@ -257,3 +257,12 @@ void GLWidget::ChangeGSigma(float sigma)
     SetupVertexAttribs();
     update();
 }
+
+void GLWidget::ChangeBlendA(float a)
+{
+    if(Empty())
+        return;
+    this->grid_mesh_.ChangeBlend_a(a);
+    SetupVertexAttribs();
+    update();
+}

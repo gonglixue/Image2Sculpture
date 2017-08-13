@@ -38,7 +38,7 @@ public:
     void ChangeMorphKernelSize(int size);
     void ChangeGKernelSize(int size);
     void ChangeGSigma(float sigma);
-
+    void ChangeBlendA(float a);
 public slots:
     void cleanup();
     void Morph_EroDila();

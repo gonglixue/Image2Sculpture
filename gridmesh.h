@@ -56,6 +56,8 @@ public:
     void ChangeGKernelSize(int kernel_size);
     // change gaussian sigma
     void ChangeGSigma(float sigma);
+    // change blend_a
+    void ChangeBlend_a(float a);
 
     cv::Mat origin_;
     cv::Mat denoise_image_;

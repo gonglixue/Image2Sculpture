@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->horizontalSlider_MorphKernel, SIGNAL(valueChanged(int)), this, SLOT(OnChangeMorphKernelSlider(int)));
     connect(ui->horizontalSlider_GKernel, SIGNAL(valueChanged(int)), this, SLOT(OnChangeGKernSlider(int)));
     connect(ui->horizontalSlider_GSigma, SIGNAL(valueChanged(int)), this, SLOT(OnChangeSigmaSlider(int)));
+    connect(ui->horizontalSlider_Blenda, SIGNAL(valueChanged(int)), this, SLOT(OnChangeBlendA(int)));
+
     connect(ui->pushButton_DilaEro, SIGNAL(clicked(bool)), ui->openGLWidget, SLOT(Morph_DilaEro()));
     connect(ui->pushButton_EroDila, SIGNAL(clicked(bool)), ui->openGLWidget, SLOT(Morph_EroDila()));
 }
@@ -34,6 +36,8 @@ void MainWindow::LoadImageAction()
                 );
     if(!image_fn.isEmpty()){
         ui->openGLWidget->SetTexture(image_fn);
+        // reset ui
+        ResetUI();
     }
 }
 
@@ -98,6 +102,15 @@ void MainWindow::OnChangeSigmaSlider(int slider_value)
     ui->doubleSpinBox_GSigma->setValue(sigma);
 }
 
+void MainWindow::OnChangeBlendA(int slider_value)
+{
+    if(CheckEmpty())
+        return;
+    float a = slider_value / 10.0f;
+    ui->openGLWidget->ChangeBlendA(a);
+    ui->doubleSpinBox_Blenda->setValue(a);
+}
+
 bool MainWindow::CheckEmpty()
 {
     if(ui->openGLWidget->Empty())
@@ -111,4 +124,10 @@ bool MainWindow::CheckEmpty()
         return true;
     }
     return false;
+}
+
+void MainWindow::ResetUI()
+{
+    ui->checkBox_Reverse->setCheckState(Qt::Unchecked);
+    ui->horizontalSlider_Contra->setValue(15);
 }

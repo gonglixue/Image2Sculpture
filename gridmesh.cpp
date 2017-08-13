@@ -130,7 +130,7 @@ void GridMesh::DenoiseImage(float contra_value, bool white_noise)
     cv::Mat contra_img;
     origin_.convertTo(contra_img, -1, contra_value, 0);
 
-    morph_mode_ = white_noise;
+    //morph_mode_ = white_noise;
     cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(morph_kernel_size_, morph_kernel_size_));
     if(white_noise){
         cv::erode(contra_img, contra_img, kernel);
@@ -260,6 +260,7 @@ void GridMesh::SaveMeshToFile(QString file_name)
 void GridMesh::Reverse()
 {
     reverse_ ^=  reverse_;
+    morph_mode_ ^= morph_mode_;
 
     cv::Mat FullMat(origin_.rows, origin_.cols, CV_8UC1, cv::Scalar(255));
     origin_ = FullMat - origin_;
@@ -338,6 +339,18 @@ void GridMesh::ChangeGSigma(float sigma)
 {
     this->gaussian_sigma_ = sigma;
     BlurImage(this->gaussian_kernel_size_, sigma);
+
+    // blend denoise and blur_img
+    cv::addWeighted(denoise_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    cv::imshow("final", final_blend_);
+
+    // use final blend image to generate z
+    GenMeshData();
+}
+
+void GridMesh::ChangeBlend_a(float a)
+{
+    blend_factor_a_ = a;
 
     // blend denoise and blur_img
     cv::addWeighted(denoise_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
