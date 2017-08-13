@@ -9,7 +9,7 @@
 #include <QOpenGLFunctions>
 #include <fstream>
 #include <opencv2/opencv.hpp>
-
+#include "constant.h"
 
 using namespace std;
 
@@ -35,7 +35,7 @@ public:
     // adjust z factor
     void AdjustZfactor(float new_z_factor);
     // adjust the denoise_image_
-    void ChangeDenoiseImage(float contra_value=1.5f);
+    void DenoiseImage(float contra_value=1.5f, bool white_noise=true);
     // adjust the blur image
     void BlurImage(int kernel_size=3, float sigma=5.0f);
     // adjust the density
@@ -43,14 +43,29 @@ public:
     // save mesh to file
     void SaveMeshToFile(QString file_name);
 
+    // Reverse interface
+    void Reverse();
+    // change contra_value interface
+    void ChangeContraValue(float contra_value);
+    // change morph_kernel_size interface
+    void ChangeMorphKernelSize(int kernel_size);
+    // erode and dilate
+    void ErodeAndDilate();
+    void DilateAndErode();
+    // change gaussian kenel size
+    void ChangeGKernelSize(int kernel_size);
+    // change gaussian sigma
+    void ChangeGSigma(float sigma);
+
     cv::Mat origin_;
     cv::Mat denoise_image_;
     cv::Mat blur_image_;
     cv::Mat final_blend_;
 private:
-    void GenZFromFinal();
+    //void AdjustZFromFinal();
     void GenMeshData();
-    float MapGrey2Z(float grey);
+    float MapGrey2Z(float grey, int mode=2);
+    void ResetParams();
 
     QVector2D left_bottom_corner_;
     QVector2D right_up_corner_;
@@ -74,11 +89,13 @@ private:
     int gaussian_kernel_size_;
     float gaussian_sigma_;
     int mid_kernel_size_;
+    int morph_kernel_size_;  //形态学处理核
     float z_factor_;
-    float bright_value_;    //对比度 0~3.0
-    float contra_value_;   //亮度
+    float bright_value_;
+    float contra_value_;   //对比度 0~3.0
     float blend_factor_a_;
     float blend_factor_high_;
+    bool morph_mode_;       // true先腐蚀后膨胀
 
 
 

@@ -19,9 +19,15 @@ public:
 public slots:
     void LoadImageAction();
     void SaveMeshAction();
+    void OnChangeCheckboxReverse();
+    void OnChangeContraSlider(int slider_value);
+    void OnChangeMorphKernelSlider(int slider_value);
+    void OnChangeGKernSlider(int slider_value);
+    void OnChangeSigmaSlider(int slider_value);
 
 private:
     Ui::MainWindow *ui;
+    bool CheckEmpty();
 };
 
 #endif // MAINWINDOW_H

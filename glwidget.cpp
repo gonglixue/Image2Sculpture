@@ -28,12 +28,12 @@ GLWidget::~GLWidget()
 
 QSize GLWidget::minimumSizeHint() const
 {
-    return QSize(512,512);
+    return QSize(640,640);
 }
 
 QSize GLWidget::sizeHint() const
 {
-    return QSize(400, 400);
+    return QSize(640, 640);
 }
 
 void GLWidget::SetTexture(QString texture_fn)
@@ -44,7 +44,7 @@ void GLWidget::SetTexture(QString texture_fn)
 
     cv::Mat grey_image = cv::imread(texture_fn.toStdString(), cv::IMREAD_GRAYSCALE);
     this->grid_mesh_.InitImage(grey_image);
-    cv::imshow("GLWidget::settexture",grey_image);
+    cv::imshow("origin",grey_image);
 
     this->SetupVertexAttribs();  // 载入纹理后需要更新VBO
 
@@ -196,4 +196,64 @@ bool GLWidget::Empty()
     if(grid_mesh_.origin_.data == NULL)
         return true;
     return false;
+}
+
+void GLWidget::Reverse()
+{
+    this->grid_mesh_.Reverse();
+    SetupVertexAttribs();
+    update();
+}
+
+void GLWidget::ChangeContraValue(float contra_value)
+{
+    this->grid_mesh_.ChangeContraValue(contra_value);
+    SetupVertexAttribs();
+    update();
+}
+
+void GLWidget::ChangeMorphKernelSize(int size)
+{
+    this->grid_mesh_.ChangeMorphKernelSize(size);
+}
+
+void GLWidget::Morph_EroDila()
+{
+    if(Empty()){
+        qDebug() << "GLWidget::Morph_EroDila:empty image";
+        return;
+    }
+    qDebug() << "erode and dilate";
+    this->grid_mesh_.ErodeAndDilate();
+    SetupVertexAttribs();
+    update();
+}
+void GLWidget::Morph_DilaEro()
+{
+    if(Empty()){
+        qDebug() << "GLWidget::Morph_DilaEro:empty image";
+        return;
+    }
+    qDebug() << "dilate and erode";
+    this->grid_mesh_.DilateAndErode();
+    SetupVertexAttribs();
+    update();
+}
+
+void GLWidget::ChangeGKernelSize(int size)
+{
+    if(Empty())
+        return;
+    this->grid_mesh_.ChangeGKernelSize(size);
+    SetupVertexAttribs();
+    update();
+}
+
+void GLWidget::ChangeGSigma(float sigma)
+{
+    if(Empty())
+        return;
+    this->grid_mesh_.ChangeGSigma(sigma);
+    SetupVertexAttribs();
+    update();
 }

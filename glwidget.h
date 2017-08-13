@@ -32,8 +32,17 @@ public:
     void SetTexture(QString texture_fn);
     void SaveMesh(QString mesh_fn);
     bool Empty();
+
+    void Reverse();
+    void ChangeContraValue(float contra_value);
+    void ChangeMorphKernelSize(int size);
+    void ChangeGKernelSize(int size);
+    void ChangeGSigma(float sigma);
+
 public slots:
     void cleanup();
+    void Morph_EroDila();
+    void Morph_DilaEro();
 
 protected:
     void initializeGL() override;
@@ -54,6 +63,7 @@ private:
     GLuint projection_mat_loc_;
     GLuint view_mat_loc_;
     QOpenGLTexture *texture;
+    QImage texture_QImage_;
 
     QString vertex_shader_fn_;
     QString frag_shader_fn_;
@@ -63,7 +73,6 @@ private:
     QMatrix4x4 view;
     QMatrix4x4 projection;
     float texture_yx_ratio_;
-
     QVector3D rot_angle_;
 
     // event params

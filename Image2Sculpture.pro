@@ -34,7 +34,8 @@ HEADERS += \
         mainwindow.h \
     gridmesh.h \
     glwidget.h \
-    qcamera.h
+    qcamera.h \
+    constant.h
 
 FORMS += \
         mainwindow.ui
