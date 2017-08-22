@@ -31,6 +31,14 @@ public slots:
     void OnChangeRenderMode();
     void OnDensityChanged(int density_x, int density_y);
     void OnChangeZMapMode();
+
+    void OnChangeContraBox(double value);
+    void OnChangeMorphKernelBox(int value);
+    void OnChangeGKernelBox(int value);
+    void OnChangeSigmaBox(double value);
+    void OnChangeBlendBox(double value);
+    void OnChangeZFactorBox(double value);
+
 private:
     Ui::MainWindow *ui;
     bool CheckEmpty();

@@ -38,6 +38,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->radioButton_Zmap1, SIGNAL(clicked(bool)), this, SLOT(OnChangeZMapMode()));
     connect(ui->radioButton_Zmap2, SIGNAL(clicked(bool)), this, SLOT(OnChangeZMapMode()));
     connect(ui->radioButton_Zmap3, SIGNAL(clicked(bool)), this, SLOT(OnChangeZMapMode()));
+
+    connect(ui->doubleSpinBox_Contra, SIGNAL(valueChanged(double)), this, SLOT(OnChangeContraBox(double)));
+    connect(ui->spinBox_MorphKernel, SIGNAL(valueChanged(int)), this, SLOT(OnChangeMorphKernelBox(int)));
+    connect(ui->spinBox_GKernel, SIGNAL(valueChanged(int)), this, SLOT(OnChangeGKernelBox(int)));
+    connect(ui->doubleSpinBox_GSigma, SIGNAL(valueChanged(double)), this, SLOT(OnChangeSigmaBox(double)));
+    connect(ui->doubleSpinBox_Blenda, SIGNAL(valueChanged(double)), this, SLOT(OnChangeBlendBox(double)));
+    connect(ui->doubleSpinBox_Zfactor, SIGNAL(valueChanged(double)), this, SLOT(OnChangeZFactorBox(double)));
 }
 
 MainWindow::~MainWindow()
@@ -98,6 +105,14 @@ void MainWindow::OnChangeContraSlider(int slider_value)
     ui->doubleSpinBox_Contra->setValue(contra_value);
 }
 
+void MainWindow::OnChangeContraBox(double value)
+{
+    if(CheckEmpty())
+        return;
+    ui->openGLWidget->ChangeContraValue(value);
+    ui->horizontalSlider_Contra->setValue(value * 10);
+}
+
 void MainWindow::OnChangeMorphKernelSlider(int slider_value)
 {
     if(CheckEmpty())
@@ -106,12 +121,28 @@ void MainWindow::OnChangeMorphKernelSlider(int slider_value)
     ui->openGLWidget->ChangeMorphKernelSize(2 * slider_value + 1);
 }
 
+void MainWindow::OnChangeMorphKernelBox(int value)
+{
+    if(CheckEmpty())
+        return;
+    ui->openGLWidget->ChangeMorphKernelSize(value);
+    ui->horizontalSlider_MorphKernel->setValue((value-1)/2);
+}
+
 void MainWindow::OnChangeGKernSlider(int slider_value)
 {
     if(CheckEmpty())
         return;
     ui->spinBox_GKernel->setValue(2 * slider_value + 1);
     ui->openGLWidget->ChangeGKernelSize(2 * slider_value + 1);
+}
+
+void MainWindow::OnChangeGKernelBox(int value)
+{
+    if(CheckEmpty())
+        return;
+    ui->openGLWidget->ChangeGKernelSize(value);
+    ui->horizontalSlider_GKernel->setValue((value-1)/2);
 }
 
 void MainWindow::OnChangeSigmaSlider(int slider_value)
@@ -123,6 +154,14 @@ void MainWindow::OnChangeSigmaSlider(int slider_value)
     ui->doubleSpinBox_GSigma->setValue(sigma);
 }
 
+void MainWindow::OnChangeSigmaBox(double value)
+{
+    if(CheckEmpty())
+        return;
+    ui->openGLWidget->ChangeGSigma(value);
+    ui->horizontalSlider_GSigma->setValue(value * 10);
+}
+
 void MainWindow::OnChangeBlendA(int slider_value)
 {
     if(CheckEmpty())
@@ -130,6 +169,14 @@ void MainWindow::OnChangeBlendA(int slider_value)
     float a = slider_value / 10.0f;
     ui->openGLWidget->ChangeBlendA(a);
     ui->doubleSpinBox_Blenda->setValue(a);
+}
+
+void MainWindow::OnChangeBlendBox(double value)
+{
+    if(CheckEmpty())
+        return;
+    ui->openGLWidget->ChangeBlendA(value);
+    ui->horizontalSlider_Blenda->setValue(value * 10);
 }
 
 void MainWindow::OnChangeBlendB(int slider_value)
@@ -148,6 +195,14 @@ void MainWindow::OnChangeZFactorSlider(int slider_value)
     ui->openGLWidget->ChangeZFactor(factor);
     ui->doubleSpinBox_Zfactor->setValue(factor);
 
+}
+
+void MainWindow::OnChangeZFactorBox(double value)
+{
+    if(CheckEmpty())
+        return;
+    ui->openGLWidget->ChangeZFactor(value);
+    ui->horizontalSlider_Zfactor->setValue(value * 1000);
 }
 
 void MainWindow::OnChangeRenderMode()
@@ -189,7 +244,7 @@ void MainWindow::ResetUI()
     ui->checkBox_Reverse->setCheckState(Qt::Unchecked);
     ui->horizontalSlider_Contra->setValue(15);
     ui->horizontalSlider_MorphKernel->setValue(1);
-    ui->horizontalSlider_Median->setValue(1);
+    //ui->horizontalSlider_Median->setValue(2);
     ui->horizontalSlider_GKernel->setValue(1);
     ui->horizontalSlider_GSigma->setValue(50);
     ui->horizontalSlider_Blenda->setValue(6);

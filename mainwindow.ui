@@ -32,6 +32,13 @@
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout">
+          <item row="1" column="2">
+           <widget class="QCheckBox" name="checkBox_Reverse">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="labelGroupName_Image">
             <property name="text">
@@ -46,17 +53,16 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QCheckBox" name="checkBox_Reverse">
-            <property name="text">
-             <string/>
+          <item row="3" column="4">
+           <widget class="QSpinBox" name="spinBox_MorphKernel">
+            <property name="minimum">
+             <number>3</number>
             </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="labelItem_Contra">
-            <property name="text">
-             <string>对比度</string>
+            <property name="maximum">
+             <number>15</number>
+            </property>
+            <property name="singleStep">
+             <number>2</number>
             </property>
            </widget>
           </item>
@@ -99,6 +105,13 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="labelItem_Contra">
+            <property name="text">
+             <string>对比度</string>
+            </property>
+           </widget>
+          </item>
           <item row="3" column="2" colspan="2">
            <widget class="QSlider" name="horizontalSlider_MorphKernel">
             <property name="maximum">
@@ -112,57 +125,14 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="4">
-           <widget class="QSpinBox" name="spinBox_MorphKernel">
-            <property name="minimum">
-             <number>3</number>
-            </property>
-            <property name="maximum">
-             <number>15</number>
-            </property>
-            <property name="singleStep">
-             <number>2</number>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0" colspan="2">
-           <widget class="QLabel" name="labelItem_MKernel">
-            <property name="text">
-             <string>中值滤波核（降噪）</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="2" colspan="2">
-           <widget class="QSlider" name="horizontalSlider_Median">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>10</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="4">
-           <widget class="QSpinBox" name="spinBox_MKernel">
-            <property name="minimum">
-             <number>3</number>
-            </property>
-            <property name="maximum">
-             <number>21</number>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="labelItem_GKernel">
             <property name="text">
              <string>高斯核</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="2" colspan="2">
+          <item row="4" column="2" colspan="2">
            <widget class="QSlider" name="horizontalSlider_GKernel">
             <property name="minimum">
              <number>1</number>
@@ -175,40 +145,14 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="4">
-           <widget class="QSpinBox" name="spinBox_GKernel">
-            <property name="minimum">
-             <number>3</number>
-            </property>
-            <property name="maximum">
-             <number>21</number>
-            </property>
-            <property name="singleStep">
-             <number>2</number>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
+          <item row="5" column="0">
            <widget class="QLabel" name="labelItem_GSigma">
             <property name="text">
              <string>高斯方差</string>
             </property>
            </widget>
           </item>
-          <item row="6" column="2" colspan="2">
-           <widget class="QSlider" name="horizontalSlider_GSigma">
-            <property name="maximum">
-             <number>70</number>
-            </property>
-            <property name="value">
-             <number>50</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="4">
+          <item row="5" column="4">
            <widget class="QDoubleSpinBox" name="doubleSpinBox_GSigma">
             <property name="maximum">
              <double>7.000000000000000</double>
@@ -221,27 +165,40 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="0" colspan="2">
-           <widget class="QLabel" name="labelItem_Blenda">
-            <property name="text">
-             <string>对比度图片混合系数</string>
+          <item row="4" column="4">
+           <widget class="QSpinBox" name="spinBox_GKernel">
+            <property name="minimum">
+             <number>3</number>
+            </property>
+            <property name="maximum">
+             <number>21</number>
+            </property>
+            <property name="singleStep">
+             <number>2</number>
             </property>
            </widget>
           </item>
-          <item row="7" column="2" colspan="2">
-           <widget class="QSlider" name="horizontalSlider_Blenda">
+          <item row="5" column="2" colspan="2">
+           <widget class="QSlider" name="horizontalSlider_GSigma">
             <property name="maximum">
-             <number>10</number>
+             <number>70</number>
             </property>
             <property name="value">
-             <number>6</number>
+             <number>50</number>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="7" column="4">
+          <item row="6" column="0" colspan="2">
+           <widget class="QLabel" name="labelItem_Blenda">
+            <property name="text">
+             <string>对比度图片混合系数</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="4">
            <widget class="QDoubleSpinBox" name="doubleSpinBox_Blenda">
             <property name="maximum">
              <double>1.000000000000000</double>
@@ -254,14 +211,27 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="1" colspan="2">
+          <item row="7" column="1" colspan="2">
            <widget class="QPushButton" name="pushButton_EroDila">
             <property name="text">
              <string>先腐蚀后膨胀</string>
             </property>
            </widget>
           </item>
-          <item row="8" column="3" colspan="2">
+          <item row="6" column="2" colspan="2">
+           <widget class="QSlider" name="horizontalSlider_Blenda">
+            <property name="maximum">
+             <number>10</number>
+            </property>
+            <property name="value">
+             <number>6</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="3" colspan="2">
            <widget class="QPushButton" name="pushButton_DilaEro">
             <property name="text">
              <string>先膨胀后腐蚀</string>
