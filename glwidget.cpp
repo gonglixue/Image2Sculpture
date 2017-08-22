@@ -8,6 +8,7 @@ GLWidget::GLWidget(QWidget *parent):QOpenGLWidget(parent),
     VBO(QOpenGLBuffer::VertexBuffer),
     EBO(QOpenGLBuffer::IndexBuffer),
     rot_angle_(0,0,0),
+    light_rot_angle_(0, 0, 0),
     set_texture_ok_(false),
     texture_yx_ratio_(1),
     active_texture_(false)
@@ -15,10 +16,12 @@ GLWidget::GLWidget(QWidget *parent):QOpenGLWidget(parent),
     grid_mesh_ = GridMesh(QVector2D(-1.0, -1.0), QVector2D(1.0, 1.0), 512);
     vertex_shader_fn_ = QDir::currentPath() + "/default.vert";
     frag_shader_fn_ = QDir::currentPath() + "/default.frag";
-    light_pos_ = QVector3D(1, 1, 1);
+    light_pos_ = QVector3D(0, 0, 2);
     texture = 0;
     camera = QCamera(QVector3D(0, 0, 3));
     model.setToIdentity();
+
+
     qDebug()<< "shader path:" << vertex_shader_fn_;
 }
 
@@ -51,6 +54,7 @@ void GLWidget::SetTexture(QString texture_fn)
 
     texture_yx_ratio_ = 1.0 * grey_image.rows / grey_image.cols;
     set_texture_ok_ = true;
+    GetDensity();
     qDebug() << "set texture ok\n";
 }
 
@@ -68,7 +72,10 @@ void GLWidget::resizeGL(int w, int h)
 
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
-    last_mouse_pos_ = event->pos();
+    if(event->buttons() & Qt::LeftButton)
+        last_mouse_pos_ = event->pos();
+    else if(event->buttons() & Qt::RightButton)
+        last_right_mouse_pos_ = event->pos();
 }
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
@@ -93,8 +100,53 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         rot_angle_.setX(
                     rot_angle_.x() + dis.y()/5.0
                     );
+        last_mouse_pos_ = event->pos();
     }
-    last_mouse_pos_ = event->pos();
+    else if(event->buttons() & Qt::RightButton)
+    {
+        QPoint dis = event->pos() - last_right_mouse_pos_;
+        QMatrix4x4 mouse_matrix;
+        mouse_matrix.setToIdentity();
+        mouse_matrix.rotate(light_rot_angle_.x(), 1,0,0);
+        mouse_matrix.rotate(light_rot_angle_.y(), 0,1,0);
+        mouse_matrix.rotate(light_rot_angle_.z(), 0,0,1);
+        QVector4D x_vector(1,0,0,0);
+        QVector4D y_vector(0,1,0,0);
+        QVector4D z_vector(0,0,1,0);
+        x_vector = mouse_matrix * x_vector;
+        y_vector = mouse_matrix * y_vector;
+        z_vector = mouse_matrix * z_vector;
+
+        light_rot_angle_.setY(
+                    light_rot_angle_.y() + (y_vector.y() / abs(y_vector.y())) * dis.x() / 20.0
+                    );
+        light_rot_angle_.setX(
+                    light_rot_angle_.x() + dis.y()/20.0
+                    );
+//        float dis_length = dis.manhattanLength();
+//        light_pos_ -= QVector3D(dis.x()/dis_length, dis.y()/dis_length,0);
+//        if(light_pos_.x() > 1.3)
+//            light_pos_.setX(1.3);
+//        else if(light_pos_.x()<-1.3)
+//            light_pos_.setX(-1.3);
+
+//        if(light_pos_.y() > 1.3)
+//            light_pos_.setY(1.3);
+//        else if(light_pos_.y() < -1.3)
+//            light_pos_.setY(-1.3);
+        qDebug() << "change light dir";
+        last_right_mouse_pos_ = event->pos();
+    }
+
+
+    update();
+}
+
+void GLWidget::wheelEvent(QWheelEvent *event)
+{
+    float forward_offset = event->delta()/100.0f;
+    this->camera.MoveForward(forward_offset);
+    qDebug() << "wheel offset:" << forward_offset;
     update();
 }
 
@@ -185,13 +237,28 @@ void GLWidget::paintGL()
     shader->setUniformValue(view_mat_loc_, view);
     shader->setUniformValue(projection_mat_loc_, projection);
     shader->setUniformValue(active_texture_loc_, active_texture_);
-    shader->setUniformValue(light_pos_loc_, light_pos_);
+
+    QMatrix4x4 light_rotate_mat;
+    light_rotate_mat.setToIdentity();
+    light_rotate_mat.rotate(light_rot_angle_.x(), 1, 0, 0);
+    light_rotate_mat.rotate(light_rot_angle_.y(), 0, 1, 0);
+    light_rotate_mat.rotate(light_rot_angle_.z(), 0, 0, 1);
+    QVector3D temp_light_pos_ = light_rotate_mat * light_pos_;
+    shader->setUniformValue(light_pos_loc_, temp_light_pos_);
 
     if(set_texture_ok_)
         texture->bind();
 
     glDrawElements(GL_TRIANGLES, this->grid_mesh_.GetIndexNum(), GL_UNSIGNED_INT, 0);
     shader->release();
+
+    // draw line
+//    glLoadIdentity();
+//    glColor3f(1, 1, 0);
+//    glBegin(GL_LINE);
+//        glVertex3f(light_pos_.x(), light_pos_.y(), light_pos_.z());
+//        glVertex3f(0, 0, 0);
+//    glEnd();
 }
 
 bool GLWidget::Empty()
@@ -271,9 +338,49 @@ void GLWidget::ChangeBlendA(float a)
     update();
 }
 
+void GLWidget::ChangeBlendB(float b)
+{
+    if(Empty())
+        return;
+    this->grid_mesh_.ChangeBlend_b(b);
+    SetupVertexAttribs();
+    update();
+}
+
 void GLWidget::ChangeZFactor(float z_factor)
 {
     this->grid_mesh_.AdjustZfactor(z_factor);
     SetupVertexAttribs();
     update();
 }
+
+void GLWidget::ChangeRenderMode(int mode)
+{
+    if(mode == 0){
+        // texture
+        active_texture_ = true;
+    }
+    else
+        active_texture_ = false;
+
+    update();
+}
+
+void GLWidget::ChangeZMapMode(int mode)
+{
+    grid_mesh_.ChangeZMapMode(mode);
+    SetupVertexAttribs();
+    update();
+}
+
+QString GLWidget::GetDensity()
+{
+    int densityx = this->grid_mesh_.GetDensityX();
+    int densityy = this->grid_mesh_.GetDensityY();
+    char density_str[100];
+    sprintf(density_str, "%d X %d", densityx, densityy);
+    QString density_info(density_str);
+    emit GLWidgetDensityChanged(densityx, densityy);
+    return density_info;
+}
+

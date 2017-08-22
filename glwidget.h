@@ -14,6 +14,9 @@
 #include <QVector4D>
 #include <QImage>
 #include <QMessageBox>
+//#include <QtOpenGL/QtOpenGL>
+//#include <QtOpenGL/qgl.h>
+//#include <QGLWidget>
 #include "gridmesh.h"
 #include "qcamera.h"
 
@@ -32,6 +35,7 @@ public:
     void SetTexture(QString texture_fn);
     void SaveMesh(QString mesh_fn);
     bool Empty();
+    QString GetDensity();
 
     void Reverse();
     void ChangeContraValue(float contra_value);
@@ -39,18 +43,23 @@ public:
     void ChangeGKernelSize(int size);
     void ChangeGSigma(float sigma);
     void ChangeBlendA(float a);
+    void ChangeBlendB(float b);
     void ChangeZFactor(float z_factor);
+    void ChangeRenderMode(int mode);
+    void ChangeZMapMode(int mode);
 public slots:
     void cleanup();
     void Morph_EroDila();
-    void Morph_DilaEro();
-
+    void Morph_DilaEro();  
+signals:
+    void GLWidgetDensityChanged(int density_x, int density_y);
 protected:
     void initializeGL() override;
     void paintGL() override;
     void resizeGL(int width, int height) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
 private:
     GridMesh grid_mesh_;
 
@@ -78,9 +87,12 @@ private:
     QMatrix4x4 projection;
     float texture_yx_ratio_;
     QVector3D rot_angle_;
+    QVector3D light_rot_angle_;
     QVector3D light_pos_;
+
     // event params
     QPoint last_mouse_pos_;
+    QPoint last_right_mouse_pos_;
 
     // state
     bool set_texture_ok_;

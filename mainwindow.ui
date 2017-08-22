@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>999</width>
+    <width>1200</width>
     <height>675</height>
    </rect>
   </property>
@@ -25,14 +25,14 @@
         <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
           <rect>
-           <x>11</x>
-           <y>13</y>
+           <x>12</x>
+           <y>14</y>
            <width>401</width>
            <height>249</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0" colspan="2">
+          <item row="0" column="0">
            <widget class="QLabel" name="labelGroupName_Image">
             <property name="text">
              <string>图像处理</string>
@@ -92,7 +92,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="2">
+          <item row="3" column="0">
            <widget class="QLabel" name="labelItem_MorphKernel">
             <property name="text">
              <string>腐蚀膨胀核</string>
@@ -188,7 +188,7 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="0" colspan="2">
+          <item row="6" column="0">
            <widget class="QLabel" name="labelItem_GSigma">
             <property name="text">
              <string>高斯方差</string>
@@ -224,7 +224,7 @@
           <item row="7" column="0" colspan="2">
            <widget class="QLabel" name="labelItem_Blenda">
             <property name="text">
-             <string>降噪图片的混合系数</string>
+             <string>对比度图片混合系数</string>
             </property>
            </widget>
           </item>
@@ -304,7 +304,7 @@
           <item row="1" column="1" colspan="3">
            <widget class="QSlider" name="horizontalSlider_Zfactor">
             <property name="minimum">
-             <number>0</number>
+             <number>2</number>
             </property>
             <property name="maximum">
              <number>100</number>
@@ -322,6 +322,9 @@
           </item>
           <item row="1" column="4">
            <widget class="QDoubleSpinBox" name="doubleSpinBox_Zfactor">
+            <property name="decimals">
+             <number>3</number>
+            </property>
             <property name="maximum">
              <double>0.100000000000000</double>
             </property>
@@ -363,6 +366,9 @@
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="labelItem_Density">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>网格密度</string>
             </property>
@@ -370,13 +376,26 @@
           </item>
           <item row="3" column="1" colspan="3">
            <widget class="QSlider" name="horizontalSlider_Density">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="minimum">
+             <number>64</number>
+            </property>
+            <property name="maximum">
+             <number>1024</number>
+            </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item row="3" column="4">
-           <widget class="QLineEdit" name="lineEdit_Density"/>
+           <widget class="QLineEdit" name="lineEdit_Density">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
           </item>
           <item row="4" column="0">
            <widget class="QLabel" name="labelItem_Render">
@@ -386,7 +405,7 @@
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="QRadioButton" name="radioButton_RenderFlat">
+           <widget class="QRadioButton" name="radioButton_RenderTexture">
             <property name="text">
              <string>texture</string>
             </property>
@@ -415,7 +434,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>999</width>
+     <width>1200</width>
      <height>26</height>
     </rect>
    </property>

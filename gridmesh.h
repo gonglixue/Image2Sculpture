@@ -9,6 +9,7 @@
 #include <QOpenGLFunctions>
 #include <fstream>
 #include <opencv2/opencv.hpp>
+#include <string>
 #include "constant.h"
 
 using namespace std;
@@ -29,6 +30,8 @@ public:
     const int *Index() const {return indices.data(); }
     int GetVertexNum() const {return vertices.size(); }
     int GetIndexNum() const {return indices.size(); }
+    int GetDensityX() const {return density_x_;}
+    int GetDensityY() const {return density_y_;}
 
     // initialize origin image(the texture)
     void InitImage(cv::Mat& origin, bool reverse=false);
@@ -58,15 +61,21 @@ public:
     void ChangeGSigma(float sigma);
     // change blend_a
     void ChangeBlend_a(float a);
+    // change zmap mode
+    void ChangeZMapMode(int mode);
+    // change blend_b
+    void ChangeBlend_b(float b);
 
     cv::Mat origin_;
     cv::Mat denoise_image_;
     cv::Mat blur_image_;
     cv::Mat final_blend_;
+    cv::Mat contra_image_;
+
 private:
     //void AdjustZFromFinal();
     void GenMeshData();
-    float MapGrey2Z(float grey, int mode=2);
+    float MapGrey2Z(float grey);
     void ResetParams();
     void EstimateVertexNormal();
 
@@ -99,6 +108,8 @@ private:
     float blend_factor_a_;
     float blend_factor_high_;
     bool morph_mode_;       // true先腐蚀后膨胀
+    int zmap_mode_;
+    float blend_factor_b_;
 
 
 

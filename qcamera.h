@@ -47,6 +47,17 @@ public:
     }
 
     void ProcessKeyboard(Camera_MOVEMENT direction, GLfloat deltaTime);
+    void MoveForward(float delta)
+    {
+
+
+        this->Position += this->Front * delta;
+        if(this->Position.z() <0)
+            this->Position.setZ(0);
+        if(this->Position.z() > 7)
+            this->Position.setZ(7);
+    }
+
 private:
     void updateCameraVectors();
 };

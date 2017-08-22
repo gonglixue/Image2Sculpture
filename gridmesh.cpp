@@ -83,6 +83,7 @@ void GridMesh::InitImage(cv::Mat& origin, bool reverse)
     density_x_ = 512;
     density_y_ = 512 * (1.0 * origin.rows / origin.cols);
 
+
     grid_width_ = 1.0f * (right_up_corner_.x() - left_bottom_corner_.x()) / (density_x_ - 1);
     grid_height_ = 1.0f * (right_up_corner_.y() - left_bottom_corner_.y()) / (density_y_ - 1);
     image_width_ = origin.cols;
@@ -114,7 +115,8 @@ void GridMesh::InitImage(cv::Mat& origin, bool reverse)
     BlurImage(this->gaussian_kernel_size_, this->gaussian_sigma_);
 
     // blend denoise and blur_img
-    cv::addWeighted(denoise_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    cv::addWeighted(contra_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    //cv::addWeighted(origin_, blend_factor_b_, final_blend_, (1-blend_factor_b_), 0, final_blend_);
     cv::imshow("final", final_blend_);
 
     // use final blend image to generate z
@@ -128,22 +130,25 @@ void GridMesh::DenoiseImage(float contra_value, bool white_noise)
     contra_value_ = contra_value;
     // 增强对比度
     cv::Mat contra_img;
-    origin_.convertTo(contra_img, -1, contra_value, 0);
+    origin_.convertTo(contra_img, -1, contra_value, (1.0-contra_value)*80);
+    this->contra_image_ = contra_img;
+    cv::imshow("Enhance Contraction", contra_image_);
 
     //morph_mode_ = white_noise;
     cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(morph_kernel_size_, morph_kernel_size_));
+    cv::Mat morph_mat;
     if(white_noise){
-        cv::erode(contra_img, contra_img, kernel);
-        cv::dilate(contra_img, contra_img, kernel);
+        cv::erode(contra_img, morph_mat, kernel);
+        cv::dilate(morph_mat, morph_mat, kernel);
     }else{
-        cv::dilate(contra_img, contra_img, kernel);
-        cv::erode(contra_img, contra_img, kernel);
+        cv::dilate(contra_img, morph_mat, kernel);
+        cv::erode(morph_mat, morph_mat, kernel);
     }
 
     // 中值滤波
-    cv::medianBlur(contra_img, this->denoise_image_, mid_kernel_size_);
+    cv::medianBlur(morph_mat, this->denoise_image_, mid_kernel_size_);
 
-    cv::imshow("denoise image", denoise_image_);
+    cv::imshow("Denoise", denoise_image_);
 }
 
 void GridMesh::BlurImage(int kernel_size, float sigma)
@@ -152,7 +157,7 @@ void GridMesh::BlurImage(int kernel_size, float sigma)
     gaussian_sigma_ = sigma;
 
     cv::GaussianBlur(denoise_image_, blur_image_, cv::Size(kernel_size, kernel_size), sigma, sigma);
-    cv::imshow("gaussian blur", blur_image_);
+    cv::imshow("Gaussian Blur After Denoise", blur_image_);
 }
 
 void GridMesh::GenMeshData()
@@ -189,9 +194,10 @@ void GridMesh::GenMeshData()
     vertex_num_ = vertices.size();
 }
 
-float GridMesh::MapGrey2Z(float grey, int mode)
+float GridMesh::MapGrey2Z(float grey)
 {
     float result;
+    int mode = this->zmap_mode_;
     switch(mode){
     case 1:
         result = grey;
@@ -270,7 +276,9 @@ void GridMesh::Reverse()
     DenoiseImage(this->contra_value_, this->morph_mode_);
     BlurImage(this->gaussian_kernel_size_, this->gaussian_sigma_);
 
-    cv::addWeighted(denoise_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    // blend denoise and blur_img
+    cv::addWeighted(contra_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    //cv::addWeighted(origin_, blend_factor_b_, final_blend_, (1-blend_factor_b_), 0, final_blend_);
     cv::imshow("final", final_blend_);
 
     // use final blend image to generate z
@@ -285,7 +293,8 @@ void GridMesh::ChangeContraValue(float contra_value)
     BlurImage(this->gaussian_kernel_size_, this->gaussian_sigma_);
 
     // blend denoise and blur_img
-    cv::addWeighted(denoise_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    cv::addWeighted(contra_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    //cv::addWeighted(origin_, blend_factor_b_, final_blend_, (1-blend_factor_b_), 0, final_blend_);
     cv::imshow("final", final_blend_);
 
     // use final blend image to generate z
@@ -303,7 +312,8 @@ void GridMesh::ErodeAndDilate()
     BlurImage(this->gaussian_kernel_size_, this->gaussian_sigma_);
 
     // blend denoise and blur_img
-    cv::addWeighted(denoise_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    cv::addWeighted(contra_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    //cv::addWeighted(origin_, blend_factor_b_, final_blend_, (1-blend_factor_b_), 0, final_blend_);
     cv::imshow("final", final_blend_);
 
     // use final blend image to generate z
@@ -316,7 +326,8 @@ void GridMesh::DilateAndErode()
     BlurImage(this->gaussian_kernel_size_, this->gaussian_sigma_);
 
     // blend denoise and blur_img
-    cv::addWeighted(denoise_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    cv::addWeighted(contra_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    //cv::addWeighted(origin_, blend_factor_b_, final_blend_, (1-blend_factor_b_), 0, final_blend_);
     cv::imshow("final", final_blend_);
 
     // use final blend image to generate z
@@ -329,7 +340,8 @@ void GridMesh::ChangeGKernelSize(int kernel_size)
     BlurImage(kernel_size, this->gaussian_sigma_);
 
     // blend denoise and blur_img
-    cv::addWeighted(denoise_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    cv::addWeighted(contra_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    //cv::addWeighted(origin_, blend_factor_b_, final_blend_, (1-blend_factor_b_), 0, final_blend_);
     cv::imshow("final", final_blend_);
 
     // use final blend image to generate z
@@ -343,7 +355,8 @@ void GridMesh::ChangeGSigma(float sigma)
     BlurImage(this->gaussian_kernel_size_, sigma);
 
     // blend denoise and blur_img
-    cv::addWeighted(denoise_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    cv::addWeighted(contra_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    //cv::addWeighted(origin_, blend_factor_b_, final_blend_, (1-blend_factor_b_), 0, final_blend_);
     cv::imshow("final", final_blend_);
 
     // use final blend image to generate z
@@ -355,11 +368,32 @@ void GridMesh::ChangeBlend_a(float a)
     blend_factor_a_ = a;
 
     // blend denoise and blur_img
-    cv::addWeighted(denoise_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    cv::addWeighted(contra_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    //cv::addWeighted(origin_, blend_factor_b_, final_blend_, (1-blend_factor_b_), 0, final_blend_);
     cv::imshow("final", final_blend_);
 
     // use final blend image to generate z
     GenMeshData();
+}
+
+void GridMesh::ChangeZMapMode(int mode)
+{
+    this->zmap_mode_ = mode;
+    GenMeshData();
+}
+
+void GridMesh::ChangeBlend_b(float b)
+{
+    blend_factor_b_ = b;
+
+    // blend denoise and blur_img
+    cv::addWeighted(contra_image_, blend_factor_a_, blur_image_, (1-blend_factor_a_), 0, final_blend_);
+    //cv::addWeighted(origin_, blend_factor_b_, final_blend_, (1-blend_factor_b_), 0, final_blend_);
+    cv::imshow("final", final_blend_);
+
+    // use final blend image to generate z
+    GenMeshData();
+
 }
 
 void GridMesh::ResetParams()
@@ -372,6 +406,8 @@ void GridMesh::ResetParams()
     contra_value_ = DEFAULT_CONTRA;
     blend_factor_a_ = DEFAULT_BLENDA;
     morph_mode_ = true;
+    zmap_mode_ = DEFAULT_ZMAPMODE;
+    blend_factor_b_ = 0.3;
 }
 
 void GridMesh::EstimateVertexNormal()

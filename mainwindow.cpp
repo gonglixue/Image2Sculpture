@@ -5,6 +5,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    btnGroup_renderMode  = new QButtonGroup(this);
+    btnGroup_zmapMode = new QButtonGroup(this);
+
     ui->setupUi(this);
     connect(ui->actionOpen_Image, SIGNAL(triggered(bool)), this, SLOT(LoadImageAction()));
     connect(ui->actionSave_Mesh, SIGNAL(triggered(bool)), this, SLOT(SaveMeshAction()));
@@ -19,6 +22,22 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButton_EroDila, SIGNAL(clicked(bool)), ui->openGLWidget, SLOT(Morph_EroDila()));
 
     connect(ui->horizontalSlider_Zfactor, SIGNAL(valueChanged(int)), this, SLOT(OnChangeZFactorSlider(int)));
+
+    btnGroup_renderMode->addButton(ui->radioButton_RenderTexture, 0);
+    btnGroup_renderMode->addButton(ui->radioButton_RenderSmooth, 1);
+    ui->radioButton_RenderSmooth->setChecked(true);
+    connect(ui->radioButton_RenderSmooth, SIGNAL(clicked(bool)), this, SLOT(OnChangeRenderMode()));
+    connect(ui->radioButton_RenderTexture,SIGNAL(clicked(bool)), this, SLOT(OnChangeRenderMode()));
+
+    connect(ui->openGLWidget, SIGNAL(GLWidgetDensityChanged(int,int)), this, SLOT(OnDensityChanged(int,int)));
+
+    btnGroup_zmapMode->addButton(ui->radioButton_Zmap1, 1);
+    btnGroup_zmapMode->addButton(ui->radioButton_Zmap2, 2);
+    btnGroup_zmapMode->addButton(ui->radioButton_Zmap3, 3);
+    ui->radioButton_Zmap1->setChecked(true);
+    connect(ui->radioButton_Zmap1, SIGNAL(clicked(bool)), this, SLOT(OnChangeZMapMode()));
+    connect(ui->radioButton_Zmap2, SIGNAL(clicked(bool)), this, SLOT(OnChangeZMapMode()));
+    connect(ui->radioButton_Zmap3, SIGNAL(clicked(bool)), this, SLOT(OnChangeZMapMode()));
 }
 
 MainWindow::~MainWindow()
@@ -113,6 +132,14 @@ void MainWindow::OnChangeBlendA(int slider_value)
     ui->doubleSpinBox_Blenda->setValue(a);
 }
 
+void MainWindow::OnChangeBlendB(int slider_value)
+{
+    if(CheckEmpty())
+        return;
+    float b = slider_value / 10.0f;
+    ui->openGLWidget->ChangeBlendB(b);
+}
+
 void MainWindow::OnChangeZFactorSlider(int slider_value)
 {
     if(CheckEmpty())
@@ -121,6 +148,25 @@ void MainWindow::OnChangeZFactorSlider(int slider_value)
     ui->openGLWidget->ChangeZFactor(factor);
     ui->doubleSpinBox_Zfactor->setValue(factor);
 
+}
+
+void MainWindow::OnChangeRenderMode()
+{
+    ui->openGLWidget->ChangeRenderMode(btnGroup_renderMode->checkedId());
+}
+
+void MainWindow::OnChangeZMapMode()
+{
+    ui->openGLWidget->ChangeZMapMode(btnGroup_zmapMode->checkedId());
+}
+
+void MainWindow::OnDensityChanged(int density_x, int density_y)
+{
+    char density_str[100];
+    sprintf(density_str, "%d x %d", density_x, density_y);
+    QString density_info(density_str);
+    ui->lineEdit_Density->setText(density_info);
+    ui->horizontalSlider_Density->setValue(density_x);
 }
 
 bool MainWindow::CheckEmpty()
@@ -142,4 +188,17 @@ void MainWindow::ResetUI()
 {
     ui->checkBox_Reverse->setCheckState(Qt::Unchecked);
     ui->horizontalSlider_Contra->setValue(15);
+    ui->horizontalSlider_MorphKernel->setValue(1);
+    ui->horizontalSlider_Median->setValue(1);
+    ui->horizontalSlider_GKernel->setValue(1);
+    ui->horizontalSlider_GSigma->setValue(50);
+    ui->horizontalSlider_Blenda->setValue(6);
+
+    ui->horizontalSlider_Zfactor->setValue(60);
+    ui->radioButton_RenderSmooth->setChecked(true);
+    ui->radioButton_RenderTexture->setChecked(false);
+
+    ui->radioButton_Zmap1->setChecked(true);
+    ui->radioButton_Zmap2->setChecked(false);
+    ui->radioButton_Zmap3->setChecked(false);
 }
