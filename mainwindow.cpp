@@ -7,6 +7,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     btnGroup_renderMode  = new QButtonGroup(this);
     btnGroup_zmapMode = new QButtonGroup(this);
+    HintLabel = new QLabel;
+    HintLabel->setMinimumSize(HintLabel->sizeHint());
+    HintLabel->setAlignment(Qt::AlignHCenter);
+    statusBar()->addWidget(HintLabel);
+
 
     ui->setupUi(this);
     connect(ui->actionOpen_Image, SIGNAL(triggered(bool)), this, SLOT(LoadImageAction()));
@@ -83,11 +88,16 @@ void MainWindow::SaveMeshAction()
                 tr("Mesh File(*.obj)")
                 );
     if(!mesh_fn.isEmpty()){
+        //HintLabel->setText("Saving Mesh...");
+        ui->statusBar->showMessage(tr("Saving Mesh..."));
         ui->openGLWidget->SaveMesh(mesh_fn);
         QMessageBox::information(this,
                              tr("Image2Scuplture"),
                              tr("Success to save mesh.\n"),
                              QMessageBox::Ok);
+        QString hint = "Success to save mesh at ";
+        //HintLabel->setText(hint+mesh_fn);
+        ui->statusBar->showMessage(hint+mesh_fn);
     }
 }
 

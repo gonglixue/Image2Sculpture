@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QButtonGroup>
+#include <QLabel>
 
 namespace Ui {
 class MainWindow;
@@ -46,6 +47,7 @@ private:
     void ResetUI();
     QButtonGroup *btnGroup_renderMode;
     QButtonGroup *btnGroup_zmapMode;
+    QLabel* HintLabel;
 };
 
 #endif // MAINWINDOW_H

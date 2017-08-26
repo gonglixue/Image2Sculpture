@@ -1,4 +1,4 @@
-#include "cvimagewidget.h"
+﻿#include "cvimagewidget.h"
 
 CVImageWidget::CVImageWidget(QWidget *parent) : QWidget(parent)
 {
@@ -21,7 +21,15 @@ void CVImageWidget::showImage(const cv::Mat &image)
     qimage_ = QImage(temp_.data, temp_.cols, temp_.rows, temp_.cols * 3,
                      QImage::Format_RGB888);
 
-    this->setFixedSize(image.cols, image.rows);
+    int width = image.cols;
+    int height = image.rows;
+    if(image.cols > 800)
+    {
+        width = 800;
+        height = width*1.0/image.cols    * image.rows;
+        qimage_ = qimage_.scaled(width,height);
+    }
+    this->setFixedSize(width, height);
     repaint();
 }
 

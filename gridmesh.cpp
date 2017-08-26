@@ -36,6 +36,12 @@ GridMesh::GridMesh(QVector2D left_bottom_corner, QVector2D righut_up_corner, int
         }
     }
 
+    indices.push_back(0);  // 左上
+    indices.push_back(grid_density-1);  // 右上
+    indices.push_back(grid_density*grid_density-1); // 右下
+    indices.push_back(0);
+    indices.push_back(grid_density*grid_density-1);
+    indices.push_back((grid_density-1)*grid_density); // 左下
 
     // initialize mesh data
     for (int row = 0; row < grid_density; row++)
@@ -55,6 +61,11 @@ GridMesh::GridMesh(QVector2D left_bottom_corner, QVector2D righut_up_corner, int
                         );
             QVector3D normal = QVector3D(0, 0, 1);
 
+            // 边界留一圈
+            if(col==0||col==1 ||row==0||row==1
+                    || col==density_x_-1 || col==density_x_-2
+                    || row==density_y_-1 || row==density_y_-2)
+                position.setZ(-1*thickness_);
 
             Vertex v;
             v.position = position;
@@ -65,8 +76,9 @@ GridMesh::GridMesh(QVector2D left_bottom_corner, QVector2D righut_up_corner, int
         }
     }
 
-    int temp_vert_num = vertices.size();
+    //int temp_vert_num = vertices.size();
     // 增加4个厚度顶点
+    /*
     {
         QVector3D position = QVector3D(left_up_corner_.x(), left_up_corner_.y(), -0.1f);
         QVector2D texcoord = QVector2D(0,0);
@@ -93,6 +105,8 @@ GridMesh::GridMesh(QVector2D left_bottom_corner, QVector2D righut_up_corner, int
         v.position = position; v.texcoord=texcoord; v.normal=normal;
         vertices.push_back(v);
     }
+    */
+    /*
     // 背面
     indices.push_back(temp_vert_num);
     indices.push_back(temp_vert_num+1);
@@ -128,6 +142,8 @@ GridMesh::GridMesh(QVector2D left_bottom_corner, QVector2D righut_up_corner, int
     indices.push_back(temp_vert_num+1);
     indices.push_back(temp_vert_num+2);
     indices.push_back(grid_density*grid_density-1);
+    */
+
 
     vertex_num_ = vertices.size();
     index_num_ = indices.size();
@@ -172,6 +188,12 @@ void GridMesh::InitImage(cv::Mat& origin, bool reverse)
 
         }
     }
+    indices.push_back(0);  // 左上
+    indices.push_back(density_x_-1);  // 右上
+    indices.push_back(density_x_ * density_y_-1); // 右下
+    indices.push_back(0);
+    indices.push_back(density_x_ * density_y_-1);
+    indices.push_back((density_y_-1)*density_x_); // 左下
 
     // denoise
     DenoiseImage(this->contra_value_, this->morph_mode_);
@@ -251,7 +273,7 @@ void GridMesh::GenMeshData()
             if(col==0||col==1 ||row==0||row==1
                     || col==density_x_-1 || col==density_x_-2
                     || row==density_y_-1 || row==density_y_-2)
-                position.setZ(0);
+                position.setZ(-1*thickness_);
 
             Vertex v;
             v.position = position;
@@ -260,6 +282,7 @@ void GridMesh::GenMeshData()
             vertices.push_back(v);
         }
     }
+    /*
     int temp_vert_num = vertices.size();
     // 增加4个厚度顶点
     {
@@ -323,7 +346,7 @@ void GridMesh::GenMeshData()
     indices.push_back(temp_vert_num+1);
     indices.push_back(temp_vert_num+2);
     indices.push_back(density_x_*density_y_-1);
-
+    */
 
 
     EstimateVertexNormal();
@@ -715,10 +738,15 @@ void GridMesh::ShowInterImage(InterImageType inter)
 void GridMesh::ChangeThickness(float t)
 {
     thickness_ = t;
-    int vert_num = vertices.size();
-    for(int i=0;i<4;i++)
-    {
-        vertices[vert_num-1-i].position.setZ(-1.0*thickness_);
-    }
+//    int vert_num = vertices.size();
+//    for(int i=0;i<4;i++)
+//    {
+//        vertices[vert_num-1-i].position.setZ(-1.0*thickness_);
+//    }
+//    vertices[0].position.setZ(-1 * thickness_);
+//    vertices[density_x_-1].position.setZ(-1*thickness_);
+//    vertices[density_x_ * density_y_-1].position.setZ(-1*thickness_);
+//    vertices[(density_y_-1)*density_x_].position.setZ(-1*thickness_);
+    GenMeshData();
     std::cout << "change thickness.\n";
 }
