@@ -1,4 +1,4 @@
-#ifndef GLWIDGET_H
+﻿#ifndef GLWIDGET_H
 #define GLWIDGET_H
 
 #include <QOpenGLWidget>
@@ -48,6 +48,11 @@ public:
     void ChangeZFactor(float z_factor);
     void ChangeRenderMode(int mode);
     void ChangeZMapMode(int mode);
+    void ChangeThickness(float thickness){
+        grid_mesh_.ChangeThickness(thickness);
+        SetupVertexAttribs();
+        update();
+    }
 
     void ShowInterImage(InterImageType inter);
 public slots:

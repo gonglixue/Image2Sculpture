@@ -1,4 +1,4 @@
-#ifndef CONSTANT_H
+﻿#ifndef CONSTANT_H
 #define CONSTANT_H
 
 #define DEFAULT_GKERNEL 3
@@ -9,6 +9,7 @@
 #define DEFAULT_CONTRA 1.5
 #define DEFAULT_BLENDA 1.0
 #define DEFAULT_ZMAPMODE 1
+#define DEFAULT_THICKNESS 0.05f
 
 
 

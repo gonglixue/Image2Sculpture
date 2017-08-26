@@ -1,4 +1,4 @@
-#ifndef GRIDMESH_H
+﻿#ifndef GRIDMESH_H
 #define GRIDMESH_H
 
 #include <vector>
@@ -72,6 +72,8 @@ public:
     void ChangeZMapMode(int mode);
     // change blend_b
     void ChangeBlend_b(float b);
+    // change thickness
+    void ChangeThickness(float t);
 
     // Show intermediate result in a image window
     void ShowInterImage(InterImageType inter);
@@ -120,6 +122,7 @@ private:
     int zmap_mode_;
     float blend_factor_b_;
 
+    float thickness_;
 
 
 

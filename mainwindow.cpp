@@ -45,6 +45,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->doubleSpinBox_GSigma, SIGNAL(valueChanged(double)), this, SLOT(OnChangeSigmaBox(double)));
     connect(ui->doubleSpinBox_Blenda, SIGNAL(valueChanged(double)), this, SLOT(OnChangeBlendBox(double)));
     connect(ui->doubleSpinBox_Zfactor, SIGNAL(valueChanged(double)), this, SLOT(OnChangeZFactorBox(double)));
+
+    connect(ui->horizontalSlider_Thickness, SIGNAL(valueChanged(int)), this, SLOT(OnChangeThicknessSlider(int)));
+    connect(ui->doubleSpinBox_Thickness, SIGNAL(valueChanged(double)), this, SLOT(OnChangeThicknessBox(double)));
 }
 
 MainWindow::~MainWindow()
@@ -235,6 +238,24 @@ void MainWindow::OnDensityChanged(int density_x, int density_y)
     QString density_info(density_str);
     ui->lineEdit_Density->setText(density_info);
     ui->horizontalSlider_Density->setValue(density_x);
+}
+
+void MainWindow::OnChangeThicknessSlider(int slider_value)
+{
+    if(CheckEmpty())
+        return;
+    float thickness = slider_value / 200.0f;
+    ui->openGLWidget->ChangeThickness(thickness);
+    ui->doubleSpinBox_Thickness->setValue(thickness);
+
+}
+
+void MainWindow::OnChangeThicknessBox(double value)
+{
+    if(CheckEmpty())
+        return;
+    ui->openGLWidget->ChangeThickness(value);
+    ui->horizontalSlider_Thickness->setValue(value * 200);
 }
 
 bool MainWindow::CheckEmpty()

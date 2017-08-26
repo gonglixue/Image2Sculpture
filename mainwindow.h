@@ -38,7 +38,8 @@ public slots:
     void OnChangeSigmaBox(double value);
     void OnChangeBlendBox(double value);
     void OnChangeZFactorBox(double value);
-
+    void OnChangeThicknessSlider(int slider_value);
+    void OnChangeThicknessBox(double value);
 private:
     Ui::MainWindow *ui;
     bool CheckEmpty();
