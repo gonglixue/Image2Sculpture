@@ -298,6 +298,7 @@ void GLWidget::Morph_EroDila()
     this->grid_mesh_.ErodeAndDilate();
     SetupVertexAttribs();
     update();
+    this->ShowInterImage(DENOISE_IMAGE);
 }
 void GLWidget::Morph_DilaEro()
 {
@@ -309,6 +310,7 @@ void GLWidget::Morph_DilaEro()
     this->grid_mesh_.DilateAndErode();
     SetupVertexAttribs();
     update();
+    this->ShowInterImage(DENOISE_IMAGE);
 }
 
 void GLWidget::ChangeGKernelSize(int size)
