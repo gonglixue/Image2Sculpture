@@ -28,14 +28,16 @@ SOURCES += \
         mainwindow.cpp \
     gridmesh.cpp \
     glwidget.cpp \
-    qcamera.cpp
+    qcamera.cpp \
+    cvimagewidget.cpp
 
 HEADERS += \
         mainwindow.h \
     gridmesh.h \
     glwidget.h \
     qcamera.h \
-    constant.h
+    constant.h \
+    cvimagewidget.h
 
 FORMS += \
         mainwindow.ui

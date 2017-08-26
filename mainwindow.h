@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -38,7 +38,7 @@ public slots:
     void OnChangeSigmaBox(double value);
     void OnChangeBlendBox(double value);
     void OnChangeZFactorBox(double value);
-
+    void OperationHelp();
 private:
     Ui::MainWindow *ui;
     bool CheckEmpty();

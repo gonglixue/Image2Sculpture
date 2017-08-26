@@ -19,6 +19,7 @@
 //#include <QGLWidget>
 #include "gridmesh.h"
 #include "qcamera.h"
+#include "cvimagewidget.h"
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram);
 QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
@@ -47,6 +48,8 @@ public:
     void ChangeZFactor(float z_factor);
     void ChangeRenderMode(int mode);
     void ChangeZMapMode(int mode);
+
+    void ShowInterImage(InterImageType inter);
 public slots:
     void cleanup();
     void Morph_EroDila();
@@ -62,6 +65,7 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 private:
     GridMesh grid_mesh_;
+    CVImageWidget* image_widget_;
 
     void SetupVertexAttribs();
 

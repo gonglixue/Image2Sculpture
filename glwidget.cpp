@@ -1,4 +1,4 @@
-#include "glwidget.h"
+﻿#include "glwidget.h"
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 #include <math.h>
@@ -21,7 +21,7 @@ GLWidget::GLWidget(QWidget *parent):QOpenGLWidget(parent),
     camera = QCamera(QVector3D(0, 0, 3));
     model.setToIdentity();
 
-
+    image_widget_ = new CVImageWidget();
     qDebug()<< "shader path:" << vertex_shader_fn_;
 }
 
@@ -48,7 +48,7 @@ void GLWidget::SetTexture(QString texture_fn)
 
     cv::Mat grey_image = cv::imread(texture_fn.toStdString(), cv::IMREAD_GRAYSCALE);
     this->grid_mesh_.InitImage(grey_image);
-    cv::imshow("origin",grey_image);
+    //cv::imshow("origin",grey_image);
 
     this->SetupVertexAttribs();  // 载入纹理后需要更新VBO
 
@@ -382,5 +382,45 @@ QString GLWidget::GetDensity()
     QString density_info(density_str);
     emit GLWidgetDensityChanged(densityx, densityy);
     return density_info;
+}
+
+void GLWidget::ShowInterImage(InterImageType inter)
+{
+    QString title;
+    switch(inter)
+    {
+    case CONTRA_IMAGE:
+        // 显示对比度图片
+        title = QString::fromLocal8Bit("调整对比度");
+        image_widget_->setWindowTitle(title);
+        image_widget_->showImage(grid_mesh_.contra_image_);
+        break;
+    case DENOISE_IMAGE:
+        // 显示降噪后的图片
+        title = QString::fromLocal8Bit("降噪");
+        image_widget_->setWindowTitle(title);
+        image_widget_->showImage(grid_mesh_.denoise_image_);
+        break;
+    case BLUR_IMAGE:
+        // 显示降噪并高斯模糊后的图片
+        title = QString::fromLocal8Bit("高斯模糊");
+        image_widget_->setWindowTitle(title);
+        image_widget_->showImage(grid_mesh_.blur_image_);
+        break;
+    case FINAL_BLEND_IAMGE:
+        // 显示最终混合的图片
+        title = QString::fromLocal8Bit("最终混合图片");
+        image_widget_->setWindowTitle(title);
+        image_widget_->showImage(grid_mesh_.final_blend_);
+        break;
+    default:
+        title = QString::fromLocal8Bit("最终混合图片");
+        image_widget_->setWindowTitle(title.toLocal8Bit());
+        image_widget_->showImage(grid_mesh_.final_blend_);
+        break;
+    }
+
+
+    image_widget_->show();
 }
 

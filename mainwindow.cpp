@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -94,6 +94,7 @@ void MainWindow::OnChangeCheckboxReverse()
         return;
 
     ui->openGLWidget->Reverse();
+    ui->openGLWidget->ShowInterImage(FINAL_BLEND_IAMGE);  // 显示最终混合图片
 }
 
 void MainWindow::OnChangeContraSlider(int slider_value)
@@ -103,6 +104,7 @@ void MainWindow::OnChangeContraSlider(int slider_value)
     float contra_value = slider_value / 10.0f;
     ui->openGLWidget->ChangeContraValue(contra_value);
     ui->doubleSpinBox_Contra->setValue(contra_value);
+    ui->openGLWidget->ShowInterImage(CONTRA_IMAGE);
 }
 
 void MainWindow::OnChangeContraBox(double value)
@@ -111,6 +113,7 @@ void MainWindow::OnChangeContraBox(double value)
         return;
     ui->openGLWidget->ChangeContraValue(value);
     ui->horizontalSlider_Contra->setValue(value * 10);
+    ui->openGLWidget->ShowInterImage(CONTRA_IMAGE);
 }
 
 void MainWindow::OnChangeMorphKernelSlider(int slider_value)
@@ -119,6 +122,7 @@ void MainWindow::OnChangeMorphKernelSlider(int slider_value)
         return;
     ui->spinBox_MorphKernel->setValue(2 * slider_value + 1);
     ui->openGLWidget->ChangeMorphKernelSize(2 * slider_value + 1);
+    ui->openGLWidget->ShowInterImage(DENOISE_IMAGE);
 }
 
 void MainWindow::OnChangeMorphKernelBox(int value)
@@ -127,14 +131,17 @@ void MainWindow::OnChangeMorphKernelBox(int value)
         return;
     ui->openGLWidget->ChangeMorphKernelSize(value);
     ui->horizontalSlider_MorphKernel->setValue((value-1)/2);
+    ui->openGLWidget->ShowInterImage(DENOISE_IMAGE);
 }
 
+// change gaussian kernel size
 void MainWindow::OnChangeGKernSlider(int slider_value)
 {
     if(CheckEmpty())
         return;
     ui->spinBox_GKernel->setValue(2 * slider_value + 1);
     ui->openGLWidget->ChangeGKernelSize(2 * slider_value + 1);
+    ui->openGLWidget->ShowInterImage(BLUR_IMAGE);
 }
 
 void MainWindow::OnChangeGKernelBox(int value)
@@ -143,6 +150,7 @@ void MainWindow::OnChangeGKernelBox(int value)
         return;
     ui->openGLWidget->ChangeGKernelSize(value);
     ui->horizontalSlider_GKernel->setValue((value-1)/2);
+    ui->openGLWidget->ShowInterImage(BLUR_IMAGE);
 }
 
 void MainWindow::OnChangeSigmaSlider(int slider_value)
@@ -152,6 +160,7 @@ void MainWindow::OnChangeSigmaSlider(int slider_value)
     float sigma = slider_value / 10.0f;
     ui->openGLWidget->ChangeGSigma(sigma);
     ui->doubleSpinBox_GSigma->setValue(sigma);
+    ui->openGLWidget->ShowInterImage(BLUR_IMAGE);
 }
 
 void MainWindow::OnChangeSigmaBox(double value)
@@ -160,6 +169,7 @@ void MainWindow::OnChangeSigmaBox(double value)
         return;
     ui->openGLWidget->ChangeGSigma(value);
     ui->horizontalSlider_GSigma->setValue(value * 10);
+    ui->openGLWidget->ShowInterImage(BLUR_IMAGE);
 }
 
 void MainWindow::OnChangeBlendA(int slider_value)
@@ -169,6 +179,7 @@ void MainWindow::OnChangeBlendA(int slider_value)
     float a = slider_value / 10.0f;
     ui->openGLWidget->ChangeBlendA(a);
     ui->doubleSpinBox_Blenda->setValue(a);
+    ui->openGLWidget->ShowInterImage(FINAL_BLEND_IAMGE);
 }
 
 void MainWindow::OnChangeBlendBox(double value)
@@ -177,6 +188,7 @@ void MainWindow::OnChangeBlendBox(double value)
         return;
     ui->openGLWidget->ChangeBlendA(value);
     ui->horizontalSlider_Blenda->setValue(value * 10);
+    ui->openGLWidget->ShowInterImage(FINAL_BLEND_IAMGE);
 }
 
 void MainWindow::OnChangeBlendB(int slider_value)
@@ -185,6 +197,7 @@ void MainWindow::OnChangeBlendB(int slider_value)
         return;
     float b = slider_value / 10.0f;
     ui->openGLWidget->ChangeBlendB(b);
+    ui->openGLWidget->ShowInterImage(FINAL_BLEND_IAMGE);
 }
 
 void MainWindow::OnChangeZFactorSlider(int slider_value)

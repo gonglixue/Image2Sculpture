@@ -16,6 +16,9 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
+     <widget class="GLWidget" name="openGLWidget"/>
+    </item>
+    <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QWidget" name="widgetImageGroup" native="true">
@@ -394,9 +397,6 @@
       </item>
      </layout>
     </item>
-    <item>
-     <widget class="GLWidget" name="openGLWidget"/>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -428,12 +428,17 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen_Image">
    <property name="text">
-    <string>Open Image</string>
+    <string>打开图片</string>
    </property>
   </action>
   <action name="actionSave_Mesh">
    <property name="text">
-    <string>Save Mesh</string>
+    <string>导出模型</string>
+   </property>
+  </action>
+  <action name="actionoperation">
+   <property name="text">
+    <string>操作说明</string>
    </property>
   </action>
  </widget>

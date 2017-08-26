@@ -21,6 +21,13 @@ struct Vertex{
 
 };
 
+enum InterImageType{
+    CONTRA_IMAGE,
+    DENOISE_IMAGE,
+    BLUR_IMAGE,
+    FINAL_BLEND_IAMGE
+};
+
 class GridMesh
 {
 public:
@@ -66,6 +73,9 @@ public:
     // change blend_b
     void ChangeBlend_b(float b);
 
+    // Show intermediate result in a image window
+    void ShowInterImage(InterImageType inter);
+
     cv::Mat origin_;
     cv::Mat denoise_image_;
     cv::Mat blur_image_;
@@ -73,7 +83,6 @@ public:
     cv::Mat contra_image_;
 
 private:
-    //void AdjustZFromFinal();
     void GenMeshData();
     float MapGrey2Z(float grey);
     void ResetParams();
