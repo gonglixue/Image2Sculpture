@@ -58,7 +58,15 @@ public:
 public slots:
     void cleanup();
     void Morph_EroDila();
-    void Morph_DilaEro();  
+    void Morph_DilaEro();
+    void Morph_DilaEro2();
+    void ChangeGridMeshDensity(int dx)
+    {
+        grid_mesh_.ChangeDensity(dx);
+        SetupVertexAttribs();
+        update();
+    }
+
 signals:
     void GLWidgetDensityChanged(int density_x, int density_y);
 protected:

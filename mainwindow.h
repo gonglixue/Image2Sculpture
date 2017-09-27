@@ -41,6 +41,9 @@ public slots:
     void OnChangeZFactorBox(double value);
     void OnChangeThicknessSlider(int slider_value);
     void OnChangeThicknessBox(double value);
+
+    void OnChangeDensityX(int dx);
+
 private:
     Ui::MainWindow *ui;
     bool CheckEmpty();

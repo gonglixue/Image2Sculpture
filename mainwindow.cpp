@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->pushButton_DilaEro, SIGNAL(clicked(bool)), ui->openGLWidget, SLOT(Morph_DilaEro()));
     connect(ui->pushButton_EroDila, SIGNAL(clicked(bool)), ui->openGLWidget, SLOT(Morph_EroDila()));
+    connect(ui->temp, SIGNAL(clicked(bool)), ui->openGLWidget, SLOT(Morph_DilaEro2()));
 
     connect(ui->horizontalSlider_Zfactor, SIGNAL(valueChanged(int)), this, SLOT(OnChangeZFactorSlider(int)));
 
@@ -53,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->horizontalSlider_Thickness, SIGNAL(valueChanged(int)), this, SLOT(OnChangeThicknessSlider(int)));
     connect(ui->doubleSpinBox_Thickness, SIGNAL(valueChanged(double)), this, SLOT(OnChangeThicknessBox(double)));
+    connect(ui->horizontalSlider_Density, SIGNAL(valueChanged(int)),this,SLOT(OnChangeDensityX(int)));
 }
 
 MainWindow::~MainWindow()
@@ -248,6 +250,13 @@ void MainWindow::OnDensityChanged(int density_x, int density_y)
     QString density_info(density_str);
     ui->lineEdit_Density->setText(density_info);
     ui->horizontalSlider_Density->setValue(density_x);
+}
+
+void MainWindow::OnChangeDensityX(int dx)
+{
+    ui->openGLWidget->ChangeGridMeshDensity(dx);
+    QString density_info = ui->openGLWidget->GetDensity();
+    ui->lineEdit_Density->setText(density_info);
 }
 
 void MainWindow::OnChangeThicknessSlider(int slider_value)

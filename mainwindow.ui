@@ -59,7 +59,7 @@
           <item row="3" column="4">
            <widget class="QSpinBox" name="spinBox_MorphKernel">
             <property name="minimum">
-             <number>3</number>
+             <number>1</number>
             </property>
             <property name="maximum">
              <number>15</number>
@@ -117,6 +117,9 @@
           </item>
           <item row="3" column="2" colspan="2">
            <widget class="QSlider" name="horizontalSlider_MorphKernel">
+            <property name="minimum">
+             <number>0</number>
+            </property>
             <property name="maximum">
              <number>10</number>
             </property>
@@ -141,7 +144,7 @@
              <number>1</number>
             </property>
             <property name="maximum">
-             <number>10</number>
+             <number>35</number>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -174,7 +177,7 @@
              <number>3</number>
             </property>
             <property name="maximum">
-             <number>21</number>
+             <number>71</number>
             </property>
             <property name="singleStep">
              <number>2</number>
@@ -238,6 +241,13 @@
            <widget class="QPushButton" name="pushButton_DilaEro">
             <property name="text">
              <string>先膨胀后腐蚀</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QPushButton" name="temp">
+            <property name="text">
+             <string>temp</string>
             </property>
            </widget>
           </item>
@@ -340,7 +350,7 @@
           <item row="4" column="0">
            <widget class="QLabel" name="labelItem_Density">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>网格密度</string>
@@ -350,13 +360,19 @@
           <item row="4" column="1" colspan="3">
            <widget class="QSlider" name="horizontalSlider_Density">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="minimum">
-             <number>64</number>
+             <number>128</number>
             </property>
             <property name="maximum">
-             <number>1024</number>
+             <number>5000</number>
+            </property>
+            <property name="singleStep">
+             <number>64</number>
+            </property>
+            <property name="value">
+             <number>512</number>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>

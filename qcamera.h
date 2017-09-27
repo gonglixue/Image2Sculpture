@@ -1,4 +1,4 @@
-#ifndef QCAMERA_H
+﻿#ifndef QCAMERA_H
 #define QCAMERA_H
 
 #include <QOpenGLFunctions>
@@ -17,7 +17,7 @@ const GLfloat YAW = -90.0f;
 const GLfloat PITCH = 0.0f;
 const GLfloat SPEED = 3.0f;
 const GLfloat SENSITIVITY = 0.25f;
-const GLfloat ZOOM = 45.0f;
+const GLfloat ZOOM = 28.0f;
 
 class QCamera
 {
@@ -54,8 +54,8 @@ public:
         this->Position += this->Front * delta;
         if(this->Position.z() <0)
             this->Position.setZ(0);
-        if(this->Position.z() > 7)
-            this->Position.setZ(7);
+        if(this->Position.z() > 10)
+            this->Position.setZ(10);
     }
 
 private:

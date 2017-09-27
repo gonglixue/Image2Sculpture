@@ -18,7 +18,7 @@ GLWidget::GLWidget(QWidget *parent):QOpenGLWidget(parent),
     frag_shader_fn_ = QDir::currentPath() + "/default.frag";
     light_pos_ = QVector3D(0, 0, 2);
     texture = 0;
-    camera = QCamera(QVector3D(0, 0, 3));
+    camera = QCamera(QVector3D(0, 0, 5));
     model.setToIdentity();
 
     image_widget_ = new CVImageWidget();
@@ -308,6 +308,19 @@ void GLWidget::Morph_DilaEro()
     }
     qDebug() << "dilate and erode";
     this->grid_mesh_.DilateAndErode();
+    SetupVertexAttribs();
+    update();
+    this->ShowInterImage(DENOISE_IMAGE);
+}
+
+void GLWidget::Morph_DilaEro2()
+{
+    if(Empty()){
+        qDebug() << "GLWidget::Morph_DilaEro:empty image";
+        return;
+    }
+    qDebug() << "dilate and erode";
+    this->grid_mesh_.DilateAndErode2();
     SetupVertexAttribs();
     update();
     this->ShowInterImage(DENOISE_IMAGE);

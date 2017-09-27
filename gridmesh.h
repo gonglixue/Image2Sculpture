@@ -48,7 +48,6 @@ public:
     void DenoiseImage(float contra_value=1.5f, bool white_noise=true);
     // adjust the blur image
     void BlurImage(int kernel_size=3, float sigma=5.0f);
-    // adjust the density
 
     // save mesh to file
     void SaveMeshToFile(QString file_name);
@@ -62,6 +61,7 @@ public:
     // erode and dilate
     void ErodeAndDilate();
     void DilateAndErode();
+    void DilateAndErode2();
     // change gaussian kenel size
     void ChangeGKernelSize(int kernel_size);
     // change gaussian sigma
@@ -74,6 +74,10 @@ public:
     void ChangeBlend_b(float b);
     // change thickness
     void ChangeThickness(float t);
+    // change density
+    void ChangeDensity(int dx);
+    // generate final image
+    void GenFinalBlendImage();
 
     // Show intermediate result in a image window
     void ShowInterImage(InterImageType inter);
@@ -83,6 +87,10 @@ public:
     cv::Mat blur_image_;
     cv::Mat final_blend_;
     cv::Mat contra_image_;
+    cv::Mat contour_image_;
+    cv::Mat dist_field_image_;
+
+    cv::Mat temp;
 
 private:
     void GenMeshData();
