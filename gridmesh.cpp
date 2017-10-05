@@ -18,7 +18,7 @@ GridMesh::GridMesh(QVector2D left_bottom_corner, QVector2D righut_up_corner, int
     float grid_width = 1.0f * (right_up_corner_.x() - left_bottom_corner.x())/(grid_density-1);
     float grid_height = 1.0f * (right_up_corner_.y() - left_bottom_corner.y())/(grid_density-1);
 
-    // initialize indices
+    // initialize front-face indices
     for (int row = 0; row < grid_density-1; row++)
     {
         for (int col = 0; col < grid_density-1; col++) {
@@ -36,14 +36,56 @@ GridMesh::GridMesh(QVector2D left_bottom_corner, QVector2D righut_up_corner, int
         }
     }
 
-    indices.push_back(0);  // 左上
-    indices.push_back(grid_density-1);  // 右上
-    indices.push_back(grid_density*grid_density-1); // 右下
-    indices.push_back(0);
-    indices.push_back(grid_density*grid_density-1);
-    indices.push_back((grid_density-1)*grid_density); // 左下
+    int front_face_vert_num = indices.size();
+    // initialize back-face indices
+    for(int row=0; row<grid_density-1; row++)
+    {
+        for(int col=0; col<grid_density-1; col++)
+        {
+            int current_left_up_corner_id = row*grid_density + col + density_x_*density_y_;
 
-    // initialize mesh data
+            indices.push_back(current_left_up_corner_id);
+            indices.push_back(current_left_up_corner_id + 1);
+            indices.push_back(current_left_up_corner_id + grid_density);
+
+
+            indices.push_back(current_left_up_corner_id + 1);
+            indices.push_back(current_left_up_corner_id + 1 + grid_density);
+            indices.push_back(current_left_up_corner_id + grid_density);
+
+        }
+    }
+
+    //左侧
+    indices.push_back(0);
+    indices.push_back(density_x_*density_y_);
+    indices.push_back((density_y_-1)*density_x_);
+    indices.push_back(density_x_*density_y_);
+    indices.push_back((density_y_-1)*density_x_ + density_x_*density_y_);
+    indices.push_back((density_y_-1)*density_x_);
+    //上侧
+    indices.push_back(0);
+    indices.push_back(density_x_-1);
+    indices.push_back(density_x_*density_y_);
+    indices.push_back(density_x_*density_y_);
+    indices.push_back(density_x_-1);
+    indices.push_back(density_x_ * density_y_ + density_x_ - 1);
+    // 右侧
+    indices.push_back(density_x_ - 1);
+    indices.push_back(density_x_*density_y_ - 1);
+    indices.push_back(density_x_*density_y_ - 1 + density_x_*density_y_);
+    indices.push_back(density_x_ - 1);
+    indices.push_back(density_x_*density_y_-1 + density_x_*density_y_);
+    indices.push_back(density_x_*density_y_ + density_x_ - 1);
+    //下侧
+    indices.push_back((density_y_-1)*density_x_);
+    indices.push_back(density_x_*density_y_-1 + density_x_*density_y_);
+    indices.push_back(density_x_*density_y_ - 1);
+    indices.push_back((density_y_-1)*density_x_);
+    indices.push_back((density_y_-1)*density_x_ + density_x_*density_y_);
+    indices.push_back(density_x_*density_y_-1 + density_x_*density_y_);
+
+    // initialize front-face mesh data
     for (int row = 0; row < grid_density; row++)
     {
         for (int col = 0; col < grid_density; col++)
@@ -61,11 +103,30 @@ GridMesh::GridMesh(QVector2D left_bottom_corner, QVector2D righut_up_corner, int
                         );
             QVector3D normal = QVector3D(0, 0, 1);
 
-            // 边界留一圈
-            if(col==0||col==1 ||row==0||row==1
-                    || col==density_x_-1 || col==density_x_-2
-                    || row==density_y_-1 || row==density_y_-2)
-                position.setZ(-1*thickness_);
+            Vertex v;
+            v.position = position;
+            v.texcoord = texcoord;
+            v.normal = normal;
+
+            vertices.push_back(v);
+        }
+    }
+
+    // initialize back-face mesh data
+    for(int row=0; row<grid_density; row++)
+    {
+        for(int col=0; col<grid_density; col++)
+        {
+            QVector3D position = QVector3D(
+                        left_up_corner_.x() + col*grid_width,
+                        left_up_corner_.y() - row*grid_height,
+                        -0.3f
+            );
+            QVector2D texcoord = QVector2D(
+                        1.0 * col / (grid_density-1),
+                        1.0 * row / (grid_density-1)
+                        );
+            QVector3D normal = QVector3D(0, 0, -1);
 
             Vertex v;
             v.position = position;
