@@ -76,6 +76,8 @@ public:
     void ChangeThickness(float t);
     // change density
     void ChangeDensity(int dx);
+    // change distance_field range
+    void ChangeDistRange(int r);
     // generate final image
     void GenFinalBlendImage();
 
@@ -131,6 +133,7 @@ private:
     float blend_factor_b_;
 
     float thickness_;
+    float dist_normal_range_;
 
 
 

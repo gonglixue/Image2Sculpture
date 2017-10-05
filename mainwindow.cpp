@@ -55,6 +55,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->horizontalSlider_Thickness, SIGNAL(valueChanged(int)), this, SLOT(OnChangeThicknessSlider(int)));
     connect(ui->doubleSpinBox_Thickness, SIGNAL(valueChanged(double)), this, SLOT(OnChangeThicknessBox(double)));
     connect(ui->horizontalSlider_Density, SIGNAL(valueChanged(int)),this,SLOT(OnChangeDensityX(int)));
+
+    connect(ui->horizontalSlider_DistRange, SIGNAL(valueChanged(int)), ui->openGLWidget, SLOT(ChangeDistFieldRange(int)));
 }
 
 MainWindow::~MainWindow()

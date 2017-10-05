@@ -32,12 +32,12 @@ GLWidget::~GLWidget()
 
 QSize GLWidget::minimumSizeHint() const
 {
-    return QSize(640,640);
+    return QSize(800,800);
 }
 
 QSize GLWidget::sizeHint() const
 {
-    return QSize(640, 640);
+    return QSize(800, 800);
 }
 
 void GLWidget::SetTexture(QString texture_fn)

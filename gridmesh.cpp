@@ -76,75 +76,6 @@ GridMesh::GridMesh(QVector2D left_bottom_corner, QVector2D righut_up_corner, int
         }
     }
 
-    //int temp_vert_num = vertices.size();
-    // 增加4个厚度顶点
-    /*
-    {
-        QVector3D position = QVector3D(left_up_corner_.x(), left_up_corner_.y(), -0.1f);
-        QVector2D texcoord = QVector2D(0,0);
-        QVector3D normal = QVector3D(-1, 1, -1);
-        Vertex v;
-        v.position=position; v.texcoord=texcoord; v.normal=normal;
-        vertices.push_back(v);
-
-        position = QVector3D(left_bottom_corner_.x(), left_bottom_corner_.y(), -0.1f);
-        texcoord = QVector2D(0, 1);
-        normal = QVector3D(-1,-1,-1);
-        v.position = position; v.texcoord=texcoord; v.normal=normal;
-        vertices.push_back(v);
-
-        position = QVector3D(right_bottom_corner_.x(), right_bottom_corner_.y(), -0.1f);
-        texcoord = QVector2D(1, 1);
-        normal = QVector3D(1,-1,-1);
-        v.position = position; v.texcoord=texcoord; v.normal=normal;
-        vertices.push_back(v);
-
-        position = QVector3D(right_up_corner_.x(), right_up_corner_.y(), -0.1f);
-        texcoord = QVector2D(1, 0);
-        normal = QVector3D(1,1,-1);
-        v.position = position; v.texcoord=texcoord; v.normal=normal;
-        vertices.push_back(v);
-    }
-    */
-    /*
-    // 背面
-    indices.push_back(temp_vert_num);
-    indices.push_back(temp_vert_num+1);
-    indices.push_back(temp_vert_num+3);
-    indices.push_back(temp_vert_num+3);
-    indices.push_back(temp_vert_num+1);
-    indices.push_back(temp_vert_num+2);
-    // 左侧面
-    indices.push_back(0);//正面左上
-    indices.push_back(temp_vert_num);
-    indices.push_back((grid_density-1)*grid_density);// 正面左下
-    indices.push_back(temp_vert_num);
-    indices.push_back(temp_vert_num+1);//背面左下
-    indices.push_back((grid_density-1)*grid_density);
-    // 右侧面
-    indices.push_back(temp_vert_num+3);//背面右上
-    indices.push_back(grid_density-1);//正面右上
-    indices.push_back(temp_vert_num+2); //背面右下
-    indices.push_back(grid_density*grid_density-1);//正面右下
-    indices.push_back(temp_vert_num+2);
-    indices.push_back(grid_density-1);
-    // 上侧面
-    indices.push_back(0);
-    indices.push_back(temp_vert_num+3);
-    indices.push_back(temp_vert_num);
-    indices.push_back(0);
-    indices.push_back(grid_density-1);
-    indices.push_back(temp_vert_num+3);
-    // 下侧面
-    indices.push_back((grid_density-1)*grid_density); //正面左下
-    indices.push_back(temp_vert_num+1);
-    indices.push_back(grid_density*grid_density-1);
-    indices.push_back(temp_vert_num+1);
-    indices.push_back(temp_vert_num+2);
-    indices.push_back(grid_density*grid_density-1);
-    */
-
-
     vertex_num_ = vertices.size();
     index_num_ = indices.size();
 }
@@ -321,10 +252,10 @@ void GridMesh::BlurImage(int kernel_size, float sigma)
     temp = FullMat - blur_image_;
     // temp thresh binary
     cv::threshold(temp, temp, 200, 255, CV_THRESH_BINARY);
-    cv::imshow("temp", temp);
+    //cv::imshow("temp", temp);
 
     cv::distanceTransform(temp, dist_field_image_, CV_DIST_L2, 3);
-    cv::normalize(dist_field_image_, dist_field_image_, 0, 1, CV_MINMAX);
+    cv::normalize(dist_field_image_, dist_field_image_, 0, dist_normal_range_, CV_MINMAX);
     cv::imshow("distance", dist_field_image_);
 }
 
@@ -610,6 +541,15 @@ void GridMesh::ChangeGSigma(float sigma)
     GenMeshData();
 }
 
+void GridMesh::ChangeDistRange(int r)
+{
+    this->dist_normal_range_ = r;
+
+    BlurImage(this->gaussian_kernel_size_, this->gaussian_sigma_);
+    GenFinalBlendImage();
+    GenMeshData();
+}
+
 void GridMesh::ChangeBlend_a(float a)
 {
     blend_factor_a_ = a;
@@ -663,6 +603,7 @@ void GridMesh::ResetParams()
     zmap_mode_ = DEFAULT_ZMAPMODE;
     blend_factor_b_ = 0.3;
     thickness_ = DEFAULT_THICKNESS;
+    dist_normal_range_ = DEFAULT_DIST_NORMAL_RANGE;
 }
 
 void GridMesh::EstimateVertexNormal()

@@ -66,6 +66,12 @@ public slots:
         SetupVertexAttribs();
         update();
     }
+    void ChangeDistFieldRange(int r)
+    {
+        grid_mesh_.ChangeDistRange(r);
+        SetupVertexAttribs();
+        update();
+    }
 
 signals:
     void GLWidgetDensityChanged(int density_x, int density_y);
