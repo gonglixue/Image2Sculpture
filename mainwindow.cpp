@@ -265,7 +265,7 @@ void MainWindow::OnChangeThicknessSlider(int slider_value)
 {
     if(CheckEmpty())
         return;
-    float thickness = slider_value / 200.0f;
+    float thickness = slider_value / 1000.0f;
     ui->openGLWidget->ChangeThickness(thickness);
     ui->doubleSpinBox_Thickness->setValue(thickness);
 
@@ -276,7 +276,7 @@ void MainWindow::OnChangeThicknessBox(double value)
     if(CheckEmpty())
         return;
     ui->openGLWidget->ChangeThickness(value);
-    ui->horizontalSlider_Thickness->setValue(value * 200);
+    ui->horizontalSlider_Thickness->setValue(value * 1000);
 }
 
 bool MainWindow::CheckEmpty()
@@ -305,6 +305,7 @@ void MainWindow::ResetUI()
     ui->horizontalSlider_Blenda->setValue(6);
 
     ui->horizontalSlider_Zfactor->setValue(60);
+    ui->horizontalSlider_Thickness->setValue(10);
     ui->radioButton_RenderSmooth->setChecked(true);
     ui->radioButton_RenderTexture->setChecked(false);
 

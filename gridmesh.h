@@ -99,6 +99,7 @@ private:
     float MapGrey2Z(float grey);
     void ResetParams();
     void EstimateVertexNormal();
+    void EstimateVertexNormal2();
 
     QVector2D left_bottom_corner_;
     QVector2D right_up_corner_;
