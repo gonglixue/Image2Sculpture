@@ -93,6 +93,7 @@ public:
     cv::Mat dist_field_image_;
 
     cv::Mat temp;
+    cv::Mat char_texture;
 
 private:
     void GenMeshData();
@@ -100,6 +101,7 @@ private:
     void ResetParams();
     void EstimateVertexNormal();
     void EstimateVertexNormal2();
+    cv::Mat TextureMask(cv::Mat& image, cv::Mat& texture);
 
     QVector2D left_bottom_corner_;
     QVector2D right_up_corner_;

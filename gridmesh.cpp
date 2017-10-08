@@ -8,6 +8,8 @@ GridMesh::GridMesh()
 GridMesh::GridMesh(QVector2D left_bottom_corner, QVector2D righut_up_corner, int grid_density)
 {
     ResetParams();
+    char_texture = cv::imread("./char_texture.jpg",cv::IMREAD_GRAYSCALE);
+    cv::imshow("texture", char_texture);
 
     density_x_ = density_y_ = density_ = grid_density;
     left_bottom_corner_ = left_bottom_corner;
@@ -389,6 +391,8 @@ void GridMesh::BlurImage(int kernel_size, float sigma)
 
     cv::GaussianBlur(denoise_image_, blur_image_, cv::Size(kernel_size, kernel_size), sigma, sigma);
     //cv::imshow("Gaussian Blur After Denoise", blur_image_);
+    cv::Mat test = TextureMask(blur_image_, char_texture);
+    cv::imshow("test", test);
 
     //cv::Sobel(this->denoise_image_, contour_image_, CV_8UC1, 1, 1);
     // before detect edge, denoise a bit
@@ -945,4 +949,26 @@ void GridMesh::ChangeDensity(int dx)
     indices.push_back((density_y_-1)*density_x_); // 左下
 
     GenMeshData();
+}
+
+cv::Mat GridMesh:: TextureMask(cv::Mat& image, cv::Mat& texture)
+{
+    cv::Mat result(image.rows, image.cols, CV_8UC1);
+    for(int i=0; i<image.rows; i++)
+    {
+        for(int j=0; j<image.cols; j++)
+        {
+            int image_v = image.at<uchar>(i, j);
+            std::cout << image_v << std::endl;
+            if(image_v < 50)
+            {
+                image_v = origin_.at<uchar>(i,j)*0.5 + texture.at<uchar>(i,j)*0.5;
+                result.at<uchar>(i,j) = image_v;
+            }
+            else
+                result.at<uchar>(i,j) = origin_.at<uchar>(i,j);
+        }
+    }
+
+    return result;
 }
