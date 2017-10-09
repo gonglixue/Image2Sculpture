@@ -89,8 +89,9 @@ public:
     cv::Mat blur_image_;
     cv::Mat final_blend_;
     cv::Mat contra_image_;
-    cv::Mat contour_image_;
+    //cv::Mat contour_image_;
     cv::Mat dist_field_image_;
+    cv::Mat mask_add_texture_;
 
     cv::Mat temp;
     cv::Mat char_texture;
@@ -100,7 +101,6 @@ private:
     float MapGrey2Z(float grey);
     void ResetParams();
     void EstimateVertexNormal();
-    void EstimateVertexNormal2();
     cv::Mat TextureMask(cv::Mat& image, cv::Mat& texture);
 
     QVector2D left_bottom_corner_;

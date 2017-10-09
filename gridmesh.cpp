@@ -8,8 +8,7 @@ GridMesh::GridMesh()
 GridMesh::GridMesh(QVector2D left_bottom_corner, QVector2D righut_up_corner, int grid_density)
 {
     ResetParams();
-    char_texture = cv::imread("./char_texture.jpg",cv::IMREAD_GRAYSCALE);
-    cv::imshow("texture", char_texture);
+
 
     density_x_ = density_y_ = density_ = grid_density;
     left_bottom_corner_ = left_bottom_corner;
@@ -171,6 +170,11 @@ void GridMesh::InitImage(cv::Mat& origin, bool reverse)
 {
     ResetParams();
 
+    cv::Mat temp_tex = cv::imread("./char_texture2.jpg",cv::IMREAD_GRAYSCALE);
+    this->char_texture = cv::Mat(origin.cols, origin.rows, CV_8UC1);
+    cv::resize(temp_tex, char_texture, cv::Size(origin.cols, origin.rows), CV_INTER_CUBIC);
+    //cv::imshow("char_tex", char_texture);
+
     if(reverse)
     {
         cv::Mat FullMat(origin.rows, origin.cols, CV_8UC1, cv::Scalar(255));
@@ -179,15 +183,11 @@ void GridMesh::InitImage(cv::Mat& origin, bool reverse)
 
     this->origin_ = origin;
     this->reverse_ = reverse;
-    //density_x_ = 512;
-    //density_y_ = 512 * (1.0 * origin.rows / origin.cols);
     if(origin.rows <= DEFAULT_MAXIMUM_DENSITY && origin.cols <=DEFAULT_MAXIMUM_DENSITY){
         density_x_ = origin.cols;
         density_y_ = origin.rows;
     }
     else{
-        //density_x_ = 2048;
-        //density_y_ = 2048 * (1.0 * origin.rows / origin.cols);
         if(origin.cols > origin.rows)
         {
             density_x_ = DEFAULT_MAXIMUM_DENSITY;
@@ -311,7 +311,6 @@ void GridMesh::InitImage(cv::Mat& origin, bool reverse)
 
 cv::Mat EraseSingleNoise(const cv::Mat& input)
 {
-    //cv::imshow("origin beform erases single noise", input);
     cv::Mat origin = input;
 
     int height = origin.rows;
@@ -341,7 +340,7 @@ cv::Mat EraseSingleNoise(const cv::Mat& input)
         }
     }
 
-    //std::cout << "nums of single noise:" << count << std::endl;
+    //blurimage << "nums of single noise:" << count << std::endl;
     //cv::imshow("erase single noise:", origin);
 
     return origin;
@@ -364,22 +363,17 @@ void GridMesh::DenoiseImage(float contra_value, bool white_noise)
     if(white_noise){
         cv::erode(contra_img, morph_mat, kernel);
         cv::dilate(morph_mat, morph_mat, kernel);
-
-        //cv::erode(morph_mat, morph_mat, kernel);
-        //cv::dilate(morph_mat, morph_mat, kernel);
     }else{
         cv::dilate(contra_img, morph_mat, kernel);
         cv::erode(morph_mat, morph_mat, kernel);
-
-        //cv::dilate(morph_mat, morph_mat, kernel);
-        //cv::erode(morph_mat, morph_mat, kernel);
     }
 
     // 中值滤波
     cv::medianBlur(morph_mat, this->denoise_image_, mid_kernel_size_);
-    //this->denoise_image_ = morph_mat;
-
     //cv::imshow("Denoise", denoise_image_);
+
+    this->mask_add_texture_ = TextureMask(denoise_image_, char_texture);
+    //cv::imshow("test", this->mask_add_texture_);
 
 
 }
@@ -391,16 +385,10 @@ void GridMesh::BlurImage(int kernel_size, float sigma)
 
     cv::GaussianBlur(denoise_image_, blur_image_, cv::Size(kernel_size, kernel_size), sigma, sigma);
     //cv::imshow("Gaussian Blur After Denoise", blur_image_);
-    cv::Mat test = TextureMask(blur_image_, char_texture);
-    cv::imshow("test", test);
 
-    //cv::Sobel(this->denoise_image_, contour_image_, CV_8UC1, 1, 1);
-    // before detect edge, denoise a bit
-    //temp = this->denoise_image_;
-    //cv::blur(this->blur_image_, temp, cv::Size(3,3));
+
+
     float lower_threshould = 30;
-    //cv::Canny(this->blur_image_, contour_image_, lower_threshould, 3*lower_threshould, 3 );
-    //cv::imshow("contour", contour_image_);
     cv::Mat FullMat(origin_.rows, origin_.cols, CV_8UC1, cv::Scalar(255));
     temp = FullMat - blur_image_;
     // temp thresh binary
@@ -515,7 +503,7 @@ void GridMesh::AdjustZfactor(float z_factor)
 
 void GridMesh::SaveMeshToFile(QString file_name)
 {
-    std::cout<<"save mesh...\n";
+    std::cout <<"save mesh...\n";
     float yx_ration = origin_.rows*1.0f/origin_.cols;
 
     ofstream out_file(file_name.toStdString());
@@ -677,7 +665,7 @@ void GridMesh::GenFinalBlendImage()
     cv::Mat dist_field_8U_image_(origin_.rows, origin_.cols, CV_8UC1, cv::Scalar(255));
     dist_field_image_.convertTo(dist_field_8U_image_, CV_8U, 255);
     dist_field_8U_image_ = FullMat - dist_field_8U_image_;
-    cv::addWeighted(origin_, blend_factor_a_, dist_field_8U_image_, (1-blend_factor_a_), 0, final_blend_);
+    cv::addWeighted(mask_add_texture_, blend_factor_a_, dist_field_8U_image_, (1-blend_factor_a_), 0, final_blend_);
 }
 
 void GridMesh::ChangeZMapMode(int mode)
@@ -852,21 +840,8 @@ void GridMesh::EstimateVertexNormal()
         for(int col=0; col<density_x_; col++)
         {
             int vertex_id = row * density_x_ + col + density_x_*density_y_;
-            QVector3D front_vert = vertices[vertex_id - density_x_*density_y_].position;
-            vertices[vertex_id].normal = QVector3D(front_vert.x(), front_vert.y(), front_vert.z()*-1);
-        }
-    }
-}
-
-void GridMesh::EstimateVertexNormal2()
-{
-    // front-face
-    for(int row=0; row<density_y_; row++)
-    {
-        for(int col=0; col<density_x_; col++)
-        {
-            int vertex_id = row * density_x_ + col;
-            Vertex v = vertices[vertex_id];
+            QVector3D front_vert = vertices[vertex_id - density_x_*density_y_].normal;
+            vertices[vertex_id].normal = QVector3D(front_vert.x()*-1, front_vert.y()*-1, front_vert.z()*-1);
         }
     }
 }
@@ -924,7 +899,7 @@ void GridMesh::ChangeDensity(int dx)
 
     indices.clear();
     // initialize indices
-    indices.clear();
+    // front
     for (int row = 0; row < density_y_-1; row++)
     {
         for (int col = 0; col < density_x_-1; col++) {
@@ -941,12 +916,74 @@ void GridMesh::ChangeDensity(int dx)
 
         }
     }
-    indices.push_back(0);  // 左上
-    indices.push_back(density_x_-1);  // 右上
-    indices.push_back(density_x_ * density_y_-1); // 右下
-    indices.push_back(0);
-    indices.push_back(density_x_ * density_y_-1);
-    indices.push_back((density_y_-1)*density_x_); // 左下
+    // back
+    for(int row=0; row<density_y_-1; row++)
+    {
+        for(int col=0; col<density_x_-1; col++)
+        {
+            int current_left_up_corner_id = row*density_x_ + col + density_x_*density_y_;
+
+            indices.push_back(current_left_up_corner_id);
+            indices.push_back(current_left_up_corner_id + 1);
+            indices.push_back(current_left_up_corner_id + density_x_);
+
+            indices.push_back(current_left_up_corner_id + 1);
+            indices.push_back(current_left_up_corner_id + 1 + density_x_);
+            indices.push_back(current_left_up_corner_id + density_x_);
+        }
+    }
+    //左侧
+    for(int row=0; row<density_y_-1; row++)
+    {
+        int ru_id = row * density_x_;
+
+        indices.push_back(ru_id);
+        indices.push_back(ru_id + density_x_ + density_x_*density_y_);
+        indices.push_back(ru_id + density_x_);
+
+        indices.push_back(ru_id);
+        indices.push_back(ru_id + density_x_*density_y_);
+        indices.push_back(ru_id + density_x_ + density_x_*density_y_);
+    }
+    //上侧
+    for(int col=0; col<density_x_-1; col++)
+    {
+        int ld_id = col;
+
+        indices.push_back(ld_id);
+        indices.push_back(ld_id+1);
+        indices.push_back(ld_id+1 + density_x_*density_y_);
+
+        indices.push_back(ld_id);
+        indices.push_back(ld_id + 1 + density_x_*density_y_);
+        indices.push_back(ld_id + density_x_*density_y_);
+    }
+    // 右侧
+    for(int row=0; row<density_y_-1; row++)
+    {
+        int lu_id = row*density_x_ + (density_x_ -1);
+
+        indices.push_back(lu_id);
+        indices.push_back(lu_id + density_x_);
+        indices.push_back(lu_id + density_x_*density_y_);
+
+        indices.push_back(lu_id + density_x_*density_y_);
+        indices.push_back(lu_id + density_x_);
+        indices.push_back(lu_id + density_x_ + density_x_*density_y_);
+    }
+    //下侧
+    for(int col=0; col<density_x_-1; col++)
+    {
+        int lu_id = (density_y_-1)*density_x_ + col;
+
+        indices.push_back(lu_id);
+        indices.push_back(lu_id + density_x_*density_y_);
+        indices.push_back(lu_id + 1);
+
+        indices.push_back(lu_id+1);
+        indices.push_back(lu_id + density_x_*density_y_);
+        indices.push_back(lu_id + 1 + density_x_*density_y_);
+    }
 
     GenMeshData();
 }
@@ -959,10 +996,10 @@ cv::Mat GridMesh:: TextureMask(cv::Mat& image, cv::Mat& texture)
         for(int j=0; j<image.cols; j++)
         {
             int image_v = image.at<uchar>(i, j);
-            std::cout << image_v << std::endl;
-            if(image_v < 50)
+            //blurimage << image_v << std::endl;
+            if(image_v < 100)
             {
-                image_v = origin_.at<uchar>(i,j)*0.5 + texture.at<uchar>(i,j)*0.5;
+                image_v = origin_.at<uchar>(i,j)*0.8 + texture.at<uchar>(i,j)*0.2;
                 result.at<uchar>(i,j) = image_v;
             }
             else
